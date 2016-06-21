@@ -7,8 +7,9 @@ var chickenSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('Chicken', chickenSchema);
-
+module.exports = mongoose.model('Chicken', chickenSchema, 'chickens');
+// 'Chicken' is the Model name
+// 'chickens' is the collection name in mongoDB
 
 
 

@@ -1,0 +1,21 @@
+Express started on http://:::80
+Mongoose: connection DB successful
+Express started on http://:::80
+Mongoose: connection DB successful
+GET creating new chicken: { __v: 0,
+  id: 1,
+  motion: 900,
+  _id: 5769731cf937a5516c4687bd,
+  created_at: Wed Jun 22 2016 01:02:20 GMT+0800 (CST) }
+{ [ValidationError: Sensor validation failed]
+  message: 'Sensor validation failed',
+  name: 'ValidationError',
+  errors: 
+   { ID: 
+      { [ValidatorError: Path `ID` is required.]
+        message: 'Path `ID` is required.',
+        name: 'ValidatorError',
+        properties: [Object],
+        kind: 'required',
+        path: 'ID',
+        value: '' } } }

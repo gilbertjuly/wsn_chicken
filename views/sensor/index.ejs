@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<title>IoT Sensor Data </title>
+
+<link rel='stylesheet' href='/stylesheets/style.css' />
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!-- Optional theme -->
+<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<!-- Latest compiled and minified JavaScript -->
+<!-- <script src="http://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> -->
+
+
+</head>
+
+<body>
+    <div class="container">
+    <div class="well jumbotron">
+        <h2>Generate the Sensor Data</h2>
+        <p>Please fill the form, the sensor data will be posted to server using JSON format. </p>
+    </div>
+
+    <form enctype='application/json' method="post" >
+        <div class="form-group">
+            <label for="sensorId">Sensor ID</label>
+            <input type="text" class="form-control" id="sensorId" name="sensorId" placeholder="12345678">
+        </div>
+         <div class="form-group">
+            <label for="sensorType">Sensor Type</label>
+            <input type="text" class="form-control" id="sensorType" name="sensorType" placeholder="Temporary">
+        </div>
+         <div class="form-group">
+            <label for="sensorLocation">Sensor Location</label>
+            <input type="text" class="form-control" id="sensorLocation" name="sensorLocation" placeholder="Shanghai">
+        </div>
+         <div class="form-group">
+            <label for="sensorValue">Sensor Value</label>
+            <input type="text" class="form-control" id="sensorValue" name="sensorValue" placeholder="20°">
+        </div>
+        <!--
+        <div class="form-group">
+            <label for="sensorTime">Sensor Time</label>
+            <input type="text" class="form-control" id="sensorTime" name="sensorTime" placeholder="2016/06/01 17:52:03">
+        </div>
+        -->
+        <button id="sensor_save" type="submit" class="btn btn-default btn-lg btn-success">Submit</button>
+    </form>
+    </div>
+
+    <footer class="footer navbar-fixed-bottom">
+        <hr>
+        <div class="container" align="center">
+            <p class="text-muted">Coded by <a href="www.juma.io">JUMA</a>.</p>
+        </div>
+    </footer>
+
+
+    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

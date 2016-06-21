@@ -1,6 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var Chicken = require('./../models/chicken.js')
+var Sensor = require('./../models/sensor.js')
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -39,12 +40,58 @@ router.get('/chickens', function(req, res) {
             res.send("There was a problem getting the information from the database.");
         }
         else{
-            console.log('GET getting chickens');
+            //console.log('GET getting chickens');
             //res.json(chickens);
             res.render('chickens/index', { chickens : chickens });
         }   
     });
 });
+
+router.get("/sensor", function(req, res){
+    res.render('sensor/index');
+});
+
+router.post("/sensor", function(req, res){
+    var sensorId = req.body.sensorId;
+    var sensorType = req.body.sensorType;
+    var sensorLocation = req.body.sensorLocation;
+    var sensorValue = req.body.sensorValue;
+    var sensorTime = req.body.sensorTime;
+
+    var sensor= new Sensor({ ID: sensorId, 
+                             TYPE: sensorType,
+                             LOCATION: sensorLocation,
+                             VALUE: sensorValue,
+                             TIME: sensorTime});
+    sensor.save(function(err){
+        if(err){
+            console.log(err);
+            res.json({"status":"ERROR"});
+        }
+        else{
+            console.log('GET creating new sensor: ' + sensor);
+            //res.json(chicken);
+            //res.render("sensor/result");
+            res.json({"status":"OK"});
+        }
+    });
+});
+
+router.get('/sensors', function(req, res) {
+    Sensor.find().sort({created_at:-1}).limit(10).exec(function(err, sensors){
+      if(err){
+            console.log(err);
+            res.send("There was a problem getting the information from the database.");
+        }
+        else{
+            //console.log('GET getting chickens');
+            //res.json(chickens);
+            sensors.reverse();
+            res.render('sensors/index', { sensors : sensors});
+        }   
+    });
+});
+
 
 
 

@@ -3,11 +3,12 @@ var bodyParser = require('body-parser')
 var path = require('path');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/chicken', function(err) {
+mongoose.connect('mongodb://localhost:27017/iot', function(err) {
+    // create an DB called 'iot' in mongodb
     if(err) {
-        console.log('MONGOOSE: connection DB error', err);
+        console.log('Mongoose: connection DB error', err);
     } else {
-        console.log('MONGOOSE: connection DB successful');
+        console.log('Mongoose: connection DB successful');
     }
 });
 

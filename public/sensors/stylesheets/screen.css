@@ -99,14 +99,14 @@ body {
 
 /* line 32, ../sass/screen.sass */
 #list {
-  width: 483px;
+  width: 683px;
   margin: 0 auto;
   padding: 20px 0 15px;
   position: relative;
 }
 
 /* line 38, ../sass/screen.sass */
-.item, .item-new {
+.item {
   overflow: hidden;
   *zoom: 1;
   background-color: #f9f9f9;
@@ -117,8 +117,26 @@ body {
   padding: 8px 9px 9px;
   position: relative;
   text-shadow: 1px 1px 0 white;
-  width: 450px;
+  width: 650px;
 }
+
+/* line 38, ../sass/screen.sass */
+.item-new {
+  overflow: hidden;
+  *zoom: 1;
+  background-color: #FF9900;
+  border: 1px solid #eeeeee;
+  border-radius: 6px 6px 6px 6px;
+  list-style: none outside none;
+  margin: 6px 0 0;
+  padding: 8px 9px 9px;
+  position: relative;
+  text-shadow: 1px 1px 0 white;
+  width: 650px;
+}
+
+
+
 /* line 49, ../sass/screen.sass */
 .item:hover, .item-new:hover {
   border-color: #9be0f9;
@@ -126,11 +144,12 @@ body {
 }
 
 /* line 53, ../sass/screen.sass */
+/*
 .item-new {
   padding: 4px 5px;
-  width: 450px;
+  width: 650px;
 }
-
+*/
 /* line 57, ../sass/screen.sass */
 .input, .update-input {
   border: 1px solid #cccccc;
