@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chicken Motion Data</title>
+<meta http-equiv="refresh" content="3">
+
+<link rel='stylesheet' href='/chickens/stylesheets/screen.css' />
+</head>
+
+<body>
+    <div id="layout">
+    <h1 id="page-title">Chicken Motion Data</h1>
+    </br>
+    </br>
+    <div align="center">
+    <h2 > == Display the lastest 10 records == </h2>
+    </div>
+
+    </br>
+
+        <div id="list">
+            <% chickens.forEach( function ( chicken ){ %>
+            <div class="item">
+                <p><%= chicken.created_at.toString().substr(4,20) %>, ID: <%= chicken.id %>, Steps: <%= chicken.motion %></p>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <div id="layout-footer">
+    </div>
+    <div id="footer-wrap">
+      <div id="footer">
+        <div class="footer-content"><a id="github-link" href="http://www.juma.io" target="_blank">Code</a> by</div>
+        <a href="http://www.juma.io" id="dreamerslab" target="_blank">Juma Lab</a>
+        <div class="footer-content">&#169;</div>
+      </div>
+    </div>
+    <script src="/chickens/javascripts/ga.js"></script>
+</body>
+</html>

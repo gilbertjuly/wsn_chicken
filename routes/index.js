@@ -25,11 +25,27 @@ router.get("/chicken", function(req, res){
         }
         else{
             console.log('GET creating new chicken: ' + chicken);
-            res.json(chicken);
+            //res.json(chicken);
+            res.send("OK");
         }
     });
 
 });
+
+router.get('/chickens', function(req, res) {
+    Chicken.find().sort({created_at:-1}).limit(10).exec(function(err, chickens){
+      if(err){
+            console.log(err);
+            res.send("There was a problem getting the information from the database.");
+        }
+        else{
+            console.log('GET getting chickens');
+            //res.json(chickens);
+            res.render('chickens/index', { chickens : chickens });
+        }   
+    });
+});
+
 
 
 module.exports = router;
