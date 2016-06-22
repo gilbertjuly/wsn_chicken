@@ -19,3 +19,27 @@ GET creating new chicken: { __v: 0,
         kind: 'required',
         path: 'ID',
         value: '' } } }
+Express started on http://:::80
+Mongoose: connection DB successful
+GET senosrs
+GET sensors:jQuery111209515772973114474_1466611197971
+GET sensors:[{"_id":"576aaeca9937f50e26a2c5f4","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"1.0V","__v":0,"CREATED_AT":"2016-06-22T15:29:14.548Z"},{"_id":"576aad1509963081251c00bf","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"3.3v","__v":0,"CREATED_AT":"2016-06-22T15:21:57.548Z"},{"_id":"576aaafd1a5bd75525754b4b","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"5.0v","__v":0,"CREATED_AT":"2016-06-22T15:13:01.641Z"}]
+GET senosrs
+GET sensors:jQuery111209515772973114474_1466611197971
+GET sensors:[{"_id":"576aaeca9937f50e26a2c5f4","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"1.0V","__v":0,"CREATED_AT":"2016-06-22T15:29:14.548Z"},{"_id":"576aad1509963081251c00bf","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"3.3v","__v":0,"CREATED_AT":"2016-06-22T15:21:57.548Z"},{"_id":"576aaafd1a5bd75525754b4b","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"5.0v","__v":0,"CREATED_AT":"2016-06-22T15:13:01.641Z"}]
+GET senosrs
+GET sensors:jQuery111209515772973114474_1466611197971
+GET sensors:[{"_id":"576aaeca9937f50e26a2c5f4","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"1.0V","__v":0,"CREATED_AT":"2016-06-22T15:29:14.548Z"},{"_id":"576aad1509963081251c00bf","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"3.3v","__v":0,"CREATED_AT":"2016-06-22T15:21:57.548Z"},{"_id":"576aaafd1a5bd75525754b4b","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"5.0v","__v":0,"CREATED_AT":"2016-06-22T15:13:01.641Z"}]
+GET creating new sensor: { __v: 0,
+  ID: '0x12345678',
+  TYPE: 'Voltage',
+  LOCATION: 'Shanghai',
+  VALUE: '0.5V',
+  _id: 576ab3ff0f9559362661aee9,
+  CREATED_AT: Wed Jun 22 2016 23:51:27 GMT+0800 (CST) }
+GET senosrs
+GET sensors:jQuery111205640180739818561_1466611212710
+GET sensors:[{"_id":"576ab3ff0f9559362661aee9","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"0.5V","__v":0,"CREATED_AT":"2016-06-22T15:51:27.167Z"},{"_id":"576aaeca9937f50e26a2c5f4","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"1.0V","__v":0,"CREATED_AT":"2016-06-22T15:29:14.548Z"},{"_id":"576aad1509963081251c00bf","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"3.3v","__v":0,"CREATED_AT":"2016-06-22T15:21:57.548Z"},{"_id":"576aaafd1a5bd75525754b4b","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"5.0v","__v":0,"CREATED_AT":"2016-06-22T15:13:01.641Z"}]
+GET senosrs
+GET sensors:undefined
+GET sensors:[{"_id":"576ab3ff0f9559362661aee9","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"0.5V","__v":0,"CREATED_AT":"2016-06-22T15:51:27.167Z"},{"_id":"576aaeca9937f50e26a2c5f4","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"1.0V","__v":0,"CREATED_AT":"2016-06-22T15:29:14.548Z"},{"_id":"576aad1509963081251c00bf","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"3.3v","__v":0,"CREATED_AT":"2016-06-22T15:21:57.548Z"},{"_id":"576aaafd1a5bd75525754b4b","ID":"0x12345678","TYPE":"Voltage","LOCATION":"Shanghai","VALUE":"5.0v","__v":0,"CREATED_AT":"2016-06-22T15:13:01.641Z"},{"_id":"576971e926ba623a6c67651f","ID":"0x12345678","TYPE":"温度","LOCATION":"上海","VALUE":"39°","__v":0,"CREATED_AT":"2016-06-21T16:57:13.543Z"},{"_id":"57696e69984241496a2b1adc","ID":"0x12345678","TYPE":"温度","LOCATION":"上海","VALUE":"39°","__v":0,"CREATED_AT":"2016-06-21T16:42:17.172Z"},{"_id":"57696e56984241496a2b1adb","ID":"0x12345678","TYPE":"温度","LOCATION":"上海","VALUE":"38°","__v":0,"CREATED_AT":"2016-06-21T16:41:58.767Z"},{"_id":"57696d9366501b3c69d8b74c","ID":"0x12345678","TYPE":"温度","LOCATION":"上海","VALUE":"36°","__v":0,"CREATED_AT":"2016-06-21T16:38:43.953Z"},{"_id":"5769617c9c31813e6707e6e1","ID":"0x12345678","TYPE":"温度","LOCATION":"上海","VALUE":"35°","__v":0,"CREATED_AT":"2016-06-21T15:47:08.576Z"},{"_id":"576961769c31813e6707e6e0","ID":"0x12345678","TYPE":"温度","LOCATION":"上海","VALUE":"33°","__v":0,"CREATED_AT":"2016-06-21T15:47:02.267Z"}]

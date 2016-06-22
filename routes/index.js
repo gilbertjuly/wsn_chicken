@@ -13,6 +13,9 @@ router.get("/about", function(req, res){
     res.render('index', { title: 'JUMA' });
 });
 
+/*
+ * Chicken Related
+ */
 router.get("/chicken", function(req, res){
     var id = req.query.id;
     var motion = req.query.motion;
@@ -30,7 +33,6 @@ router.get("/chicken", function(req, res){
             res.send("OK");
         }
     });
-
 });
 
 router.get('/chickens', function(req, res) {
@@ -47,10 +49,10 @@ router.get('/chickens', function(req, res) {
     });
 });
 
-router.get("/sensor", function(req, res){
-    res.render('sensor/index');
-});
-
+/*
+ * SENSOR Related
+ */
+/* Sensor data posting */
 router.post("/sensor", function(req, res){
     var sensorId = req.body.sensorId;
     var sensorType = req.body.sensorType;
@@ -70,15 +72,90 @@ router.post("/sensor", function(req, res){
         }
         else{
             console.log('GET creating new sensor: ' + sensor);
-            //res.json(chicken);
             //res.render("sensor/result");
             res.json({"status":"OK"});
         }
     });
 });
 
-router.get('/sensors', function(req, res) {
-    Sensor.find().sort({created_at:-1}).limit(10).exec(function(err, sensors){
+/* Export Sensor data by JSONP, solving Cross-Domain issue. */
+router.get("/sensors", function(req, res){
+    console.log("GET senosrs");
+    var id = req.query.id;
+    var type = req.query.type;
+    var count= req.query.count;
+    var offset= req.query.offset;
+
+    var sensorsCallback = function(err, sensors){
+        if(err){
+            console.log(err);
+            res.send("There was a problem getting the information from the database.");
+        }
+        else{
+            res.header('Content-type','application/json');
+            res.header('Charset','utf8');
+            res.send(req.query.callback + '('+ JSON.stringify(sensors) + ');');
+            console.log("GET sensors:" + req.query.callback);
+            console.log("GET sensors:" + JSON.stringify(sensors));
+        } 
+    }; 
+
+    //if ( typeof count === 'undefined' || count === null ){
+    if ( count == null )
+        count = 10;
+    else
+        count = Number(count);
+
+    if ( offset == null )
+        offset = 0;
+    else
+        offset = Number(offset);
+
+    if( (typeof id !== 'undefined' && id ) && 
+        (typeof type !== 'undefined' && type)){
+        Sensor
+        .find()
+        .where('ID').equals(id)
+        .where('TYPE').equals(type)
+        .sort({CREATED_AT:-1})
+        .limit(count).skip(offset)
+        .exec(sensorsCallback);
+    }
+    else if(typeof id !== 'undefined' && id ){
+        Sensor
+        .find()
+        .where('ID').equals(id)
+        .sort({CREATED_AT:-1})
+        .limit(count).skip(offset)
+        .exec(sensorsCallback);
+    }
+    else if(typeof type !== 'undefined' && type){
+        //type = decodeHtmlEntit(type); 
+        Sensor
+        .find()
+        .where('TYPE').equals(type)
+        .sort({CREATED_AT:-1})
+        .limit(count).skip(offset)
+        .exec(sensorsCallback);
+    }
+    else{
+        Sensor
+        .find()
+        .sort({CREATED_AT:-1})
+        .limit(count).skip(offset)
+        .exec(sensorsCallback);
+    }
+
+});
+
+/* A example of Sensor data generating */
+router.get("/sensor_generator", function(req, res){
+    res.render('sensor_generator/index');
+});
+
+/* Display 10 most recent Sensor data */
+router.get('/sensors_ten', function(req, res) {
+    Sensor.find().sort({CREATED_AT:-1}).limit(10).exec(function(err, sensors){
       if(err){
             console.log(err);
             res.send("There was a problem getting the information from the database.");
@@ -86,8 +163,8 @@ router.get('/sensors', function(req, res) {
         else{
             //console.log('GET getting chickens');
             //res.json(chickens);
-            sensors.reverse();
-            res.render('sensors/index', { sensors : sensors});
+            //sensors.reverse();
+            res.render('sensors_ten/index', { sensors : sensors});
         }   
     });
 });
