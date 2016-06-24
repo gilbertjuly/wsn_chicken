@@ -3,7 +3,7 @@ var bodyParser = require('body-parser')
 var path = require('path');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/iot', function(err) {
+mongoose.connect('mongodb://localhost:27017/chickens', function(err) {
     // create an DB called 'iot' in mongodb
     if(err) {
         console.log('Mongoose: connection DB error', err);
@@ -52,7 +52,7 @@ app.use(function(err, req, res, next) {
 });
 
 if (!module.parent) {
-    var server = app.listen(80, function () {
+    var server = app.listen(3000, function () {
       var host = server.address().address
       var port = server.address().port
       console.log("Express started on http://%s:%s", host, port)
