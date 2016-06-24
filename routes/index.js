@@ -13,127 +13,40 @@ router.get("/about", function(req, res){
     res.render('index', { title: 'JUMA' });
 });
 
-//router.get("/chicken", function(req, res){
-//    var id = req.query.id;
-//    var motion = req.query.motion;
-//
-//    var chicken = new Chicken({ id: id,
-//                                motion: motion});
-//    chicken.save(function(err){
-//        if(err){
-//            console.log(err);
-//            res.send("There was a problem adding the information to the database.");
-//        }
-//        else{
-//            console.log('GET creating new chicken: ' + chicken);
-//            //res.json(chicken);
-//            res.send("OK");
-//        }
-//    });
-//});
+/*
+ * Chicken Related
+ */
+router.get("/chicken", function(req, res){
+    var id = req.query.id;
+    var motion = req.query.motion;
 
-
-router.get("/save_chicken", function(req, res){
-    var did = req.query.did;
-    var steps = req.query.steps;
-    var volt = req.query.volt;
-
-    var chicken= new Chicken({ did: did,
-        steps: steps,
-        volt: volt});
+    var chicken = new Chicken({ id: id, 
+                                motion: motion});
     chicken.save(function(err){
         if(err){
             console.log(err);
-            res.json({"status":"ERROR"});
+            res.send("There was a problem adding the information to the database.");
         }
         else{
             console.log('GET creating new chicken: ' + chicken);
-            //res.render("sensor/result");
-            res.json({"status":"OK"});
+            //res.json(chicken);
+            res.send("OK");
         }
     });
 });
 
-router.post("/save_chicken", function(req, res){
-    var did = req.body.did;
-    var steps = req.body.steps;
-    var volt = req.body.volt;
-
-    var chicken= new Chicken({ did: did,
-        steps: steps,
-        volt: volt});
-    chicken.save(function(err){
-        if(err){
+router.get('/chickens', function(req, res) {
+    Chicken.find().sort({created_at:-1}).limit(10).exec(function(err, chickens){
+      if(err){
             console.log(err);
-            res.json({"status":"ERROR"});
+            res.send("There was a problem getting the information from the database.");
         }
         else{
-            console.log('GET creating new chicken: ' + chicken);
-            //res.render("sensor/result");
-            res.json({"status":"OK"});
-        }
+            //console.log('GET getting chickens');
+            //res.json(chickens);
+            res.render('chickens/index', { chickens : chickens });
+        }   
     });
-});
-
-
-//router.get('/chickens', function(req, res) {
-//    Chicken.find().sort({created_at:-1}).limit(10).exec(function(err, chickens){
-//        if(err){
-//            console.log(err);
-//            res.send("There was a problem getting the information from the database.");
-//        }
-//        else{
-//            //console.log('GET getting chickens');
-//            //res.json(chickens);
-//            res.render('chickens/index', { chickens : chickens });
-//        }
-//    });
-//});
-
-// get html
-router.get("/chickens", function(req, res){
-    console.log("GET chickens html");
-    res.send('chickens/index');
-});
-
-// get chickens with json
-router.get("/chickens_page", function(req, res){
-    console.log("GET chickens in some page");
-    var count= req.query.count;
-    var offset= req.query.offset;
-    console.log(req.query);
-
-    var chickensCallback = function(err, chickens){
-        if(err){
-            console.log("error: " + err);
-            res.send("There was a problem getting the information from the database." + err);
-        }
-        else{
-            res.header('Content-type','application/json');
-            res.header('Charset','utf8');
-            res.header('Access-Control-Allow-Origin', '*');
-            res.send(JSON.stringify(chickens));
-            console.log("GET chickens in some page:" + req.query.callback);
-            console.log("GET chickens in some page:" + JSON.stringify(chickens));
-        }
-    };
-
-    //if ( typeof count === 'undefined' || count === null ){
-    if ( count == null )
-        count = 10;
-    else
-        count = Number(count);
-
-    if ( offset == null )
-        offset = 0;
-    else
-        offset = Number(offset);
-
-    console.log("offset = " + offset + ", count = " + count);
-
-    Chicken.find()
-        .limit(count).skip(offset)
-        .exec(chickensCallback);
 });
 
 /*
@@ -181,7 +94,7 @@ router.get("/sensors", function(req, res){
         else{
             res.header('Content-type','application/json');
             res.header('Charset','utf8');
-            res.send(JSON.stringify(sensors));
+            res.send(req.query.callback + '('+ JSON.stringify(sensors) + ');');
             console.log("GET sensors:" + req.query.callback);
             console.log("GET sensors:" + JSON.stringify(sensors));
         } 
@@ -197,8 +110,6 @@ router.get("/sensors", function(req, res){
         offset = 0;
     else
         offset = Number(offset);
-
-    console.log("offset = " + offset + ", count = " + count);
 
     if( (typeof id !== 'undefined' && id ) && 
         (typeof type !== 'undefined' && type)){
