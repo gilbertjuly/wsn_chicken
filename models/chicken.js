@@ -1,11 +1,10 @@
-var mongoose = require('mongoose');  
-var chickenSchema = new mongoose.Schema({  
-    //name: String,
-    id: { type: Number, required: true },
-    motion: { type: Number, required: true },
-    created_at: { type: Date, required: true, default: Date.now }    
+var mongoose = require('mongoose');
+var chickenSchema = new mongoose.Schema({
+    did: { type: String, required: true }, // 设备 id
+    steps: { type: Number, required: true }, // 步数
+    volt: { type: Number, required: true }, // 设备电压
+    time: { type: Date, required: true, default: Date.now } // 接收到这一数据的时间
 });
-
 
 module.exports = mongoose.model('Chicken', chickenSchema, 'chickens');
 // 'Chicken' is the Model name
