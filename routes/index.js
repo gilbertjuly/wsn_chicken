@@ -30,6 +30,21 @@ router.get("/save_log", function(req, res){
     });
 });
 
+router.get("/read_logs", function(req, res){
+    Sensor.find().exec(function(err, logs){
+        if(err){
+            console.log(err);
+            res.send("There was a problem getting the information from the database.");
+        }
+        else{
+            //console.log('GET getting chickens');
+            //res.json(chickens);
+            //sensors.reverse();
+            res.render('chickens/log', { logs : logs});
+        }
+    });
+});
+
 /************************* Log ***************************/
 
 /************************* Chicken ***************************/
