@@ -1,4 +1,62 @@
 
+var waTable; // 引用创建出来的表的全局变量
+var buffer = []; // 存储所有从服务器获取的小鸡的数据
+
+// set table
+function createTable() {
+
+    //Second example that shows all options.
+    waTable = $('#example2').WATable(tableParameter()).data('WATable');//This step reaches into the html data property to get the actual WATable object. Important if you want a reference to it as we want here.
+
+    //Generate some data
+//        var data = generateSampleData(500);
+//        waTable.setData(data);  //Sets the data.
+    //waTable.setData(data, true); //Sets the data but prevents any previously set columns from being overwritten
+    //waTable.setData(data, false, false); //Sets the data and prevents any previously checked rows from being reset
+
+    //Get the data
+//            var allRows = waTable.getData(false); //Returns the data you previously set.
+//            var checkedRows = waTable.getData(true); //Returns only the checked rows.
+//            var filteredRows = waTable.getData(false, true); //Returns only the filtered rows.
+//            var renderedRows = waTable.getData(false, false, true) //Returns only the rendered rows.
+
+    //Set options on the fly
+    var pageSize = waTable.option("pageSize"); //Get option
+    //waTable.option("pageSize", pageSize); //Set option
+
+    //Databinding example
+//            var row = waTable.getRow(5).row; //Get row with unique value of 5.
+//            row.name = "Data-Binding Works"; //This would update the table...but only in ultra modern browsers. (See here http://caniuse.com/#search=observe)
+//            Platform.performMicrotaskCheckpoint(); //This make sure it also works in browsers not yet compatible with Object.observe. This is the polyfill that's used.(https://github.com/polymer/observe-js).
+
+//            //More databinding
+//            data.rows.shift(); //Removes the first row.
+//            var newRow = generateSampleData(1).rows[0];
+//            data.rows.push(newRow); //Add new row
+//            Platform.performMicrotaskCheckpoint();
+
+    //Example event handler triggered by the custom refresh link above.
+//            $('#example2').on('click', '.refresh', function(e) {
+////                e.preventDefault();
+////                //Get and set some new data
+////                var data = generateSampleData(100);
+////                waTable.setData(data, true);
+//            });
+    //Example event handler triggered by the custom export links above.
+    /*$('#example2').on('click', '.export', function(e) {
+     e.preventDefault();
+     var elem = $(e.target);
+     var data;
+     if (elem.hasClass('all')) data = waTable.getData(false);
+     else if (elem.hasClass('checked')) data = waTable.getData(true);
+     else if (elem.hasClass('filtered')) data = waTable.getData(false, true);
+     else if (elem.hasClass('rendered')) data = waTable.getData(false, false, true);
+     console.log(data.rows.length + ' rows returned', data);
+     alert(data.rows.length + ' rows returned.\nSee data in console.');
+     });*/
+
+}
+
 function tableParameter() {
     return {
         //data: generateSampleData(100), //Initiate with data if you already have it
@@ -13,7 +71,7 @@ function tableParameter() {
         sortEmptyLast:true,         //Empty values will be shown last
         columnPicker: true,         //Show the columnPicker button
         pageSizes: [10,50,200],  //Set custom pageSizes. Leave empty array to hide button.
-        hidePagerOnEmpty: true,     //Removes the pager if data is empty.
+        hidePagerOnEmpty: false,     //Removes the pager if data is empty.
         checkboxes: false,           //Make rows checkable. (Note. You need a column with the 'unique' property)
         checkAllToggle:false,        //Show the check-all toggle
         preFill: true,              //Initially fills the table with empty rows (as many as the pagesize).
@@ -90,97 +148,13 @@ function tableParameter() {
         pageChanged: function(data) {      //Fires when manually changing page
             console.log('page changed');    //data.event holds the original jQuery event
             console.log(data);              //data.page holds the new page index
+            alert("page = " + data.page)
         },
         pageSizeChanged: function(data) {  //Fires when manually changing pagesize
             console.log('pagesize changed');//data.event holds teh original event
             console.log(data);              //data.pageSize holds the new pagesize
         }
     }
-}
-
-var waTable;
-
-// set table
-function createTable() {
-
-    //Second example that shows all options.
-    waTable = $('#example2').WATable(tableParameter()).data('WATable');//This step reaches into the html data property to get the actual WATable object. Important if you want a reference to it as we want here.
-
-    //Generate some data
-//        var data = generateSampleData(500);
-//        waTable.setData(data);  //Sets the data.
-    //waTable.setData(data, true); //Sets the data but prevents any previously set columns from being overwritten
-    //waTable.setData(data, false, false); //Sets the data and prevents any previously checked rows from being reset
-
-    //Get the data
-//            var allRows = waTable.getData(false); //Returns the data you previously set.
-//            var checkedRows = waTable.getData(true); //Returns only the checked rows.
-//            var filteredRows = waTable.getData(false, true); //Returns only the filtered rows.
-//            var renderedRows = waTable.getData(false, false, true) //Returns only the rendered rows.
-
-    //Set options on the fly
-    var pageSize = waTable.option("pageSize"); //Get option
-    //waTable.option("pageSize", pageSize); //Set option
-
-    //Databinding example
-//            var row = waTable.getRow(5).row; //Get row with unique value of 5.
-//            row.name = "Data-Binding Works"; //This would update the table...but only in ultra modern browsers. (See here http://caniuse.com/#search=observe)
-//            Platform.performMicrotaskCheckpoint(); //This make sure it also works in browsers not yet compatible with Object.observe. This is the polyfill that's used.(https://github.com/polymer/observe-js).
-
-//            //More databinding
-//            data.rows.shift(); //Removes the first row.
-//            var newRow = generateSampleData(1).rows[0];
-//            data.rows.push(newRow); //Add new row
-//            Platform.performMicrotaskCheckpoint();
-
-    //Example event handler triggered by the custom refresh link above.
-//            $('#example2').on('click', '.refresh', function(e) {
-////                e.preventDefault();
-////                //Get and set some new data
-////                var data = generateSampleData(100);
-////                waTable.setData(data, true);
-//            });
-    //Example event handler triggered by the custom export links above.
-    /*$('#example2').on('click', '.export', function(e) {
-     e.preventDefault();
-     var elem = $(e.target);
-     var data;
-     if (elem.hasClass('all')) data = waTable.getData(false);
-     else if (elem.hasClass('checked')) data = waTable.getData(true);
-     else if (elem.hasClass('filtered')) data = waTable.getData(false, true);
-     else if (elem.hasClass('rendered')) data = waTable.getData(false, false, true);
-     console.log(data.rows.length + ' rows returned', data);
-     alert(data.rows.length + ' rows returned.\nSee data in console.');
-     });*/
-
-}
-
-////////////// net
-//function getData(url, handler) {
-//    var request = new XMLHttpRequest();
-//    request.onreadystatechange = handler;
-//    request.open("GET", url, true);
-//    request.send(null);
-//}
-
-function getChickensData(offset, count) {
-    var parameters = "?offset=" + offset + "&count=" + count;
-    var url = "http://117.121.38.191:3000/chickens_page" + parameters;
-
-
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function() {
-        //alert("readystate = " + this.readyState + "status = " + this.status);
-        if (this.readyState === 4 && this.status === 200) {
-            //alert("success: " + this.response);
-            var json = eval ("(" + this.responseText + ")");
-            var data = parseResponse(json);
-
-            waTable.setData(data);
-        }
-    };
-    request.open("GET", url, true);
-    request.send(null);
 }
 
 function parseResponse(json) {
@@ -254,3 +228,59 @@ function parseResponse(json) {
     return data;
 }
 
+
+////////////// net
+//function getData(url, handler) {
+//    var request = new XMLHttpRequest();
+//    request.onreadystatechange = handler;
+//    request.open("GET", url, true);
+//    request.send(null);
+//}
+
+function getChickenDataFromBuffer(offset, count) {
+    var chickens = [];
+    var endIndex = offset + count;
+
+    for (var i = offset; i < endIndex; i++) {
+        chickens.push(buffer[i])
+    }
+
+    var data = parseResponse(chickens);
+    waTable.setData(data);
+}
+
+function getChickensDataFromServer(offset, count) {
+    var parameters = "?offset=" + offset + "&count=" + count;
+    var url = "http://117.121.38.191:3000/chickens_page" + parameters;
+
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        //alert("readystate = " + this.readyState + "status = " + this.status);
+        if (this.readyState === 4) {
+
+            if (this.status === 200) {
+                var json = eval ("(" + this.responseText + ")");
+                var data = parseResponse(json);
+                waTable.setData(data);
+
+                /// add to buffer
+                for (var i = 0; i < json.length; i++) {
+                    buffer.push(json[i]);
+                }
+            } else  {
+                alert("readystate = " + this.readyState + ", status = " + this.status);
+            }
+        }
+    };
+    request.open("GET", url, true);
+    request.send(null);
+}
+
+function getChickensData(offset, count) {
+
+    if (offset + count < buffer.length) {
+        getChickenDataFromBuffer(offset, count);
+    } else  {
+        getChickensDataFromServer(offset, count);
+    }
+}
