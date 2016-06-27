@@ -1,7 +1,8 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var Chicken = require('./../models/chicken.js')
-var Sensor = require('./../models/sensor.js')
+var Chicken = require('./../models/chicken.js');
+var Sensor = require('./../models/sensor.js');
+var Log = require('./../models/log.js');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -12,6 +13,24 @@ router.get("/about", function(req, res){
     //res.sendFile(path + "about.html");
     res.render('index', { title: 'JUMA' });
 });
+
+/************************* Log ***************************/
+
+router.get("/save_log", function(req, res){
+    var log= new Log({ log: req.query.log});
+    log.save(function(err){
+        if(err){
+            console.log(err);
+            res.json({"status":"ERROR", "msg": err});
+        }
+        else{
+            console.log('GET creating new log: ' + log);
+            res.json({"status":"OK"});
+        }
+    });
+});
+
+/************************* Log ***************************/
 
 /************************* Chicken ***************************/
 // save Chicken data from GET request
