@@ -8,19 +8,19 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="format-detection" content="email=no" />
 
+    <script type="text/javascript" src="./javascripts/jquery.js"></script>
     <script type="text/javascript" src="./javascripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="./javascripts/chickens.js"></script>
-    <script type="text/javascript" src="./javascripts/jquery.js"></script>
     <script type="text/javascript" src="./javascripts/jquery.watable.js" charset="utf-8"></script>
     <script type="text/javascript" src="./javascripts/jquery.simple-dtpicker.js"></script>
 
     <link rel='stylesheet' href="./stylesheets/bootstrap.min.css" />
-    <link rel='stylesheet' href="./stylesheets/jquery.simple-dtpicker.css" />
     <link rel='stylesheet' href='./stylesheets/watable.css'/>
+    <link rel='stylesheet' href="./stylesheets/jquery.simple-dtpicker.css" />
     <style type="text/css">body { padding: 0px; font-size: 12px }</style>
+
 </head>
 <body>
-<h3>JUMA</h3>
 
 <input type="text" id="date_foo" value="">
 <script type="text/javascript">
@@ -33,7 +33,7 @@
             "firstDayOfWeek": 1, // 把周一作为一周的第一天
             "closeOnSelected": true,
             "onHide": function(handler) {
-                window.alert("date = " + handler.getDate())
+                // to do
             }
         });
     });
@@ -44,7 +44,6 @@
 
     $(document).ready( function() {
         createTable();
-        alert("create table")
     });
 
     getChickensData(0, 20);
