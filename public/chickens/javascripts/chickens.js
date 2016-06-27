@@ -69,8 +69,8 @@ function tableParameter() {
         filter: true,               //Show filter fields
         sorting: true,              //Enable sorting
         sortEmptyLast:true,         //Empty values will be shown last
-        columnPicker: true,         //Show the columnPicker button
-        pageSizes: [10,50,200],  //Set custom pageSizes. Leave empty array to hide button.
+        //columnPicker: true,         //Show the columnPicker button
+        pageSizes: [],  //Set custom pageSizes. Leave empty array to hide button.
         hidePagerOnEmpty: false,     //Removes the pager if data is empty.
         checkboxes: false,           //Make rows checkable. (Note. You need a column with the 'unique' property)
         checkAllToggle:false,        //Show the check-all toggle
@@ -95,17 +95,17 @@ function tableParameter() {
                 datePicker: true      //Requires "Datepicker for Bootstrap" plugin (http://www.eyecon.ro/bootstrap-datepicker).
             }
         },
-        actions: {                //This generates a button where you can add elements.
-            filter: true,         //If true, the filter fields can be toggled visible and hidden.
-            columnPicker: true,   //if true, the columnPicker can be toggled visible and hidden.
-            custom: [             //Add any other elements here. Here is a refresh and export example.
-                $('<a href="#" class="refresh"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Refresh</a>'),
-                $('<a href="#" class="export all"><span class="glyphicon glyphicon-share"></span>&nbsp;Export all rows</a>'),
-                $('<a href="#" class="export checked"><span class="glyphicon glyphicon-share"></span>&nbsp;Export checked rows</a>'),
-                $('<a href="#" class="export filtered"><span class="glyphicon glyphicon-share"></span>&nbsp;Export filtered rows</a>'),
-                $('<a href="#" class="export rendered"><span class="glyphicon glyphicon-share"></span>&nbsp;Export rendered rows</a>')
-            ]
-        },
+        //actions: {                //This generates a button where you can add elements.
+        //    filter: true,         //If true, the filter fields can be toggled visible and hidden.
+        //    columnPicker: true,   //if true, the columnPicker can be toggled visible and hidden.
+        //    custom: [             //Add any other elements here. Here is a refresh and export example.
+        //        $('<a href="#" class="refresh"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Refresh</a>'),
+        //        $('<a href="#" class="export all"><span class="glyphicon glyphicon-share"></span>&nbsp;Export all rows</a>'),
+        //        $('<a href="#" class="export checked"><span class="glyphicon glyphicon-share"></span>&nbsp;Export checked rows</a>'),
+        //        $('<a href="#" class="export filtered"><span class="glyphicon glyphicon-share"></span>&nbsp;Export filtered rows</a>'),
+        //        $('<a href="#" class="export rendered"><span class="glyphicon glyphicon-share"></span>&nbsp;Export rendered rows</a>')
+        //    ]
+        //},
         tableCreated: function(data) {    //Fires when the table is created / recreated. Use it if you want to manipulate the table in any way.
             console.log('table created'); //data.table holds the html table element.
             console.log(data);            //'this' keyword also holds the html table element.
