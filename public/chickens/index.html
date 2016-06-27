@@ -26,6 +26,12 @@
 
 <div id="example2" style="width:auto"></div>
 
+
+<form>
+    <input type="button" value="上一个小时" onclick="showPreviousHourData()">
+    <input type="button" value="下一个小时" onclick="showNextHourData()">
+</form>
+
 <script type="text/javascript">
 
     $(document).ready( function() {
@@ -37,5 +43,17 @@
     getChickensData(0, 20);
 
 </script>
+
+<script>
+    function showPreviousHourData() {
+        alert("show previous hour")
+    }
+
+    function showNextHourData() {
+        alert("next")
+    }
+</script>
+
+
 </body>
 </html>
