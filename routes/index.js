@@ -31,7 +31,7 @@ router.get("/save_log", function(req, res){
 });
 
 router.get("/read_logs", function(req, res){
-    Sensor.find().exec(function(err, logs){
+    Log.find().exec(function(err, logs){
         if(err){
             console.log(err);
             res.send("There was a problem getting the information from the database.");
@@ -40,7 +40,7 @@ router.get("/read_logs", function(req, res){
             //console.log('GET getting chickens');
             //res.json(chickens);
             //sensors.reverse();
-            res.render('chickens/log', { logs : logs});
+            res.render('chickens/log.ejs', { logs : logs});
         }
     });
 });

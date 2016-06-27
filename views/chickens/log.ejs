@@ -4,17 +4,37 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width" />
 
+    <style type="text/css">
+        .pos_abs
+        {
+            position: fixed;/*这是必须的*/
+            z-index: 999;
+            background:green;
+            left:10px;
+            top:5px
+        }
+    </style>
+
     <title>Log</title>
 </head>
 <body>
 
 <p></p>
-<input type="button" value="刷新" onclick="location.reload()">
+<input class="pos_abs" type="button" value="刷新" onclick="location.reload()">
 <p></p>
 
-<% for (var i = 0; i < logs.length; i++) { %>
-     <p><%logs[i]%></p>
-<% } %>
+
+<div id="list">
+    <% var i = 0 %>
+    <% logs.forEach( function ( item ){ %>
+    <% i++ %>
+    <div class="item-new">
+        <p>
+            <%= item.log %>
+        </p>
+    </div>
+    <% }); %>
+</div>
 
 </body>
 </html>
