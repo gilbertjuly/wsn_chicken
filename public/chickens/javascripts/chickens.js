@@ -164,7 +164,7 @@ function parseResponse(json) {
             index: 1, //The order this column should appear in the table
             type: "string", //The type. Possible are string, number, bool, date(in milliseconds).
             friendly: "设备",  //Name that will be used in header. Can also be any html as shown here.
-            format: "<a href=http://117.121.38.191:3000/chicken?did={0} target='_parent'>{0}</a>",  //Used to format the data anything you want. Use {0} as placeholder for the actual data.
+            format: "<a href=http://www.jumacc.com:3000/chicken?did={0} target='_parent'>{0}</a>",  //Used to format the data anything you want. Use {0} as placeholder for the actual data.
             unique: true,  //This is required if you want checkable rows, databinding or to use the rowClicked callback. Be certain the values are really unique or weird things will happen.
             sortOrder: "asc", //Data will initially be sorted by this column. Possible are "asc" or "desc"
             tooltip: "This column has an initial filter", //Show some additional info about column
@@ -253,7 +253,7 @@ function getChickenDataFromBuffer(offset, count) {
 
 function getChickensDataFromServer(offset, count) {
     var parameters = "?offset=" + offset + "&count=" + count;
-    var url = "http://117.121.38.191:3000/chickens_page" + parameters;
+    var url = "http://www.jumacc.com:3000/chickens_page" + parameters;
 
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
