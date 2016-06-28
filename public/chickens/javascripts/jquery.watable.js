@@ -249,8 +249,14 @@
                         var headCell = $('<th></th>').appendTo(_headSort);
                         var link;
                         if(priv.options.sorting && props.sorting !== false) {
-                            link = $('<a class="pull-left" href="#">{0}</a>'.f(props.friendly || column));
-                            link.on('click', {column: column}, priv.columnClicked);
+
+                            // 手动添加一个 text 输入框
+                            if (props.type === "date") {
+                                link = $('<input type="text" id="date_picker" value="">');
+                            } else  {
+                                link = $('<a class="pull-left" href="#">{0}</a>'.f(props.friendly || column));
+                                link.on('click', {column: column}, priv.columnClicked);
+                            }
                         }
                         else {
                             link = $('<span class="pull-left">{0}</span>'.f(props.friendly || column));

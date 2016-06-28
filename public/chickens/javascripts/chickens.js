@@ -247,6 +247,7 @@ function getChickenDataFromBuffer(offset, count) {
 
     var data = parseResponse(chickens);
     waTable.setData(data);
+    setDateTimePicker(); // 必须在时间输入框创建完成之后再设置 picker, 当前选择的时机过早
 }
 
 function getChickensDataFromServer(offset, count) {
@@ -283,4 +284,17 @@ function getChickensData(offset, count) {
     } else  {
         getChickensDataFromServer(offset, count);
     }
+}
+
+function setDateTimePicker() {
+    // id = date_date_picker 的元素是写死在 jquery.watable.js 中的
+    $('#date_date_picker').appendDtpicker({
+//            "current": shownDate,
+        "locale": "cn",
+        "firstDayOfWeek": 1, // 把周一作为一周的第一天
+        "closeOnSelected": true,
+        "onHide": function(handler) {
+            // to do
+        }
+    });
 }
