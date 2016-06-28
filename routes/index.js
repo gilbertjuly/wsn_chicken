@@ -113,11 +113,9 @@ router.get("/chicken", function(req, res){
             res.send("There was a problem getting the information from the database.");
         }
         else{
-            res.render('sensors_ten/chicken', { did : did, chicken_datas : chicken_datas});
+            res.render('chickens/chicken.ejs', { did : did, chicken_datas : chicken_datas});
         }
     });
-    console.log("GET chickens html");
-    res.render('chickens/chickens/index.html');
 });
 
 // return Chicken data in a range
