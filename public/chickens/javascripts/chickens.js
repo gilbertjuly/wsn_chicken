@@ -118,6 +118,7 @@ function tableParameter() {
                                           //data.checked is true if row is checked. (Set to false/true to have it unchecked/checked)
                                           //'this' keyword holds the clicked element.
 
+
             //Removes the row if user clicked on the column called 'remove'.
             /*if (data.column.column == "remove") {
              data.event.preventDefault();
@@ -163,7 +164,7 @@ function parseResponse(json) {
             index: 1, //The order this column should appear in the table
             type: "string", //The type. Possible are string, number, bool, date(in milliseconds).
             friendly: "设备",  //Name that will be used in header. Can also be any html as shown here.
-            format: "<a href='#' tar get='_parent'>{0}</a>",  //Used to format the data anything you want. Use {0} as placeholder for the actual data.
+            format: "<a href=http://117.121.38.191:3000/chicken?did={0} target='_parent'>{0}</a>",  //Used to format the data anything you want. Use {0} as placeholder for the actual data.
             unique: true,  //This is required if you want checkable rows, databinding or to use the rowClicked callback. Be certain the values are really unique or weird things will happen.
             sortOrder: "asc", //Data will initially be sorted by this column. Possible are "asc" or "desc"
             tooltip: "This column has an initial filter", //Show some additional info about column
