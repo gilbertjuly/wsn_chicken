@@ -1,10 +1,8 @@
 
 var waTable; // 引用创建出来的表的全局变量
-var buffer = []; // 存储所有从服务器获取的小鸡的数据
+var buffer = {}; // 存储所有从服务器获取的小鸡的数据
 
-// set table
 function createTable() {
-
     //Second example that shows all options.
     waTable = $('#example2').WATable(tableParameter()).data('WATable');//This step reaches into the html data property to get the actual WATable object. Important if you want a reference to it as we want here.
 
@@ -54,7 +52,6 @@ function createTable() {
      console.log(data.rows.length + ' rows returned', data);
      alert(data.rows.length + ' rows returned.\nSee data in console.');
      });*/
-
 }
 
 function tableParameter() {
@@ -158,7 +155,8 @@ function tableParameter() {
     }
 }
 
-function parseResponse(json) {
+function renderTable(chickens) {
+    // header row data
     var cols = {
         did: {
             index: 1, //The order this column should appear in the table
@@ -207,12 +205,12 @@ function parseResponse(json) {
      */
 
     var rows = [];
-    for (var i = 0; i < json.length; i++) {
+    for (var i = 0; i < chickens.length; i++) {
         var row = {};
-        row.did = json[i].did;
-        row.steps = json[i].steps;
-        row.volt = json[i].volt;
-        row.time = json[i].time;
+        row.did = chickens[i].did;
+        row.steps = chickens[i].steps;
+        row.volt = chickens[i].volt;
+        row.time = chickens[i].time;
         rows.push(row);
     }
 
@@ -225,8 +223,9 @@ function parseResponse(json) {
             needLater: true
         }
     };
-    console.log(data);
-    return data;
+
+    waTable.setData(data);
+    //setDateTimePicker(); // 必须在时间输入框创建完成之后再设置 picker, 当前选择的时机过早
 }
 
 
@@ -238,37 +237,20 @@ function parseResponse(json) {
 //    request.send(null);
 //}
 
-function getChickenDataFromBuffer(offset, count) {
-    var chickens = [];
-    var endIndex = offset + count;
-
-    for (var i = offset; i < endIndex; i++) {
-        chickens.push(buffer[i])
-    }
-
-    var data = parseResponse(chickens);
-    waTable.setData(data);
-    setDateTimePicker(); // 必须在时间输入框创建完成之后再设置 picker, 当前选择的时机过早
-}
-
-function getChickensDataFromServer(offset, count) {
-    var parameters = "?offset=" + offset + "&count=" + count;
-    var url = "http://www.jumacc.com:3000/chickens_page" + parameters;
+function getChickensDataFromServer(date) {
+    var url = "http://www.jumacc.com:3000/chickens_at_hour"
+        + "?year=" + date.getFullYear()
+        + "&month=" + date.getMonth()
+        + "&day=" + date.getDay()
+        + "&hour=" + date.getHours();
 
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
-        //alert("readystate = " + this.readyState + "status = " + this.status);
         if (this.readyState === 4) {
-
             if (this.status === 200) {
-                var json = eval ("(" + this.responseText + ")");
-                var data = parseResponse(json);
-                waTable.setData(data);
-
-                /// add to buffer
-                for (var i = 0; i < json.length; i++) {
-                    buffer.push(json[i]);
-                }
+                var chickens = eval ("(" + this.responseText + ")");
+                renderTable(chickens);
+                buffer[date] = chickens;
             } else  {
                 alert("readystate = " + this.readyState + ", status = " + this.status);
             }
@@ -278,12 +260,13 @@ function getChickensDataFromServer(offset, count) {
     request.send(null);
 }
 
-function getChickensData(offset, count) {
+function getChickensData(date) {
+    var chickens = buffer[date];
 
-    if (offset + count < buffer.length) {
-        getChickenDataFromBuffer(offset, count);
-    } else  {
-        getChickensDataFromServer(offset, count);
+    if (chickens) {
+        renderTable(chickens)
+    } else {
+        getChickensDataFromServer(date);
     }
 }
 

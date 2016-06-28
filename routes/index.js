@@ -118,44 +118,36 @@ router.get("/chicken", function(req, res){
     });
 });
 
-// return Chicken data in a range
-router.get("/chickens_page", function(req, res){
-    console.log("GET chickens in some page");
-    var count= req.query.count;
-    var offset= req.query.offset;
-    console.log(req.query);
+// return all Chicken data at a certain hour
+router.get("/chickens_at_hour", function(req, res){
+    var year= req.query.year;
+    var month= req.query.month;
+    var day= req.query.day;
+    var hour= req.query.hour;
 
-    var chickensCallback = function(err, chickens){
-        if(err){
-            console.log("error: " + err);
-            res.send("There was a problem getting the information from the database." + err);
-        }
-        else{
-            res.header('Content-type','application/json');
-            res.header('Charset','utf8');
-            res.header('Access-Control-Allow-Origin', '*');
-            res.send(JSON.stringify(chickens));
-            console.log("GET chickens in some page:" + req.query.callback);
-            console.log("GET chickens in some page:" + JSON.stringify(chickens));
-        }
-    };
+    var currentHour = new Date(year, month, day, hour);
+    var nextHour = new  Date(year, month, day, hour + 1);
+    console.log("GET chickens from " + req.query + " to " + nextHour);
 
-    //if ( typeof count === 'undefined' || count === null ){
-    if ( count == null )
-        count = 10;
-    else
-        count = Number(count);
-
-    if ( offset == null )
-        offset = 0;
-    else
-        offset = Number(offset);
-
-    console.log("offset = " + offset + ", count = " + count);
-
-    Chicken.find()
-        .limit(count).skip(offset)
-        .exec(chickensCallback);
+    Chicken
+        .find()
+        .$where(function () {
+            return this.time >= currentHour && this.time < nextHour;
+        })
+        .exec(function(err, chickens){
+            if(err){
+                console.log("error: " + err);
+                res.send("There was a problem getting the information from the database." + err);
+            }
+            else{
+                res.header('Content-type','application/json');
+                res.header('Charset','utf8');
+                res.header('Access-Control-Allow-Origin', '*');
+                res.send(JSON.stringify(chickens));
+                console.log("GET chickens in some page:" + req.query.callback);
+                console.log("GET chickens in some page:" + JSON.stringify(chickens));
+            }
+        });
 });
 /************************* Chicken ***************************/
 

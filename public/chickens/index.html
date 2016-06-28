@@ -24,16 +24,24 @@
 
 <input type="text" id="date_foo" value="">
 <script type="text/javascript">
-    //    var shownDate = new Date();
+    var shownDate = new Date();
+    shownDate.setMinutes(0);
+    shownDate.setSeconds(0);
 
     $(function(){
         $('#date_foo').appendDtpicker({
-//            "current": shownDate,
+            "current": shownDate,
             "locale": "cn",
             "firstDayOfWeek": 1, // 把周一作为一周的第一天
             "closeOnSelected": true,
             "onHide": function(handler) {
-                // to do
+                var selectedDate = handler.getDate();
+                selectedDate.setMinutes(0);
+
+                if (shownDate != selectedDate) {
+                    shownDate = selectedDate;
+                    getChickensData(shownDate);
+                }
             }
         });
     });
@@ -46,7 +54,7 @@
         createTable();
     });
 
-    getChickensData(0, 20);
+    getChickensData(shownDate);
 </script>
 
 
