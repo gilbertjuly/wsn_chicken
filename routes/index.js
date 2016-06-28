@@ -132,9 +132,10 @@ router.get("/chickens_at_hour", function(req, res){
 
     Chicken
         .find()
-        .$where(function () {
-            return this.time >= currentHour && this.time < nextHour;
-        })
+        .where('time').gte(currentHour).lt(nextHour)
+        //.$where(function () {
+        //    return this.time >= currentHour && this.time < nextHour;
+        //})
         .exec(function(err, chickens){
             if(err){
                 console.log("error: " + err);
