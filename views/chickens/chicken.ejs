@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>
+        <% did %>
+    </title>
+</head>
+<body>
+
+<p></p>
+<input class="pos_abs" type="button" value="刷新" onclick="location.reload()">
+<p></p>
+
+
+<div id="list">
+    <% var i = 0 %>
+    <% logs.forEach( function ( item ){ %>
+    <% i++ %>
+    <div class="item-new">
+        <p>
+            did = <%= item.did %>, steps = <%= item.steps %>, volt = <% item.volt %>, time = <% item.time %>
+        </p>
+    </div>
+    <% }); %>
+</div>
+
+</body>
+</html>

@@ -92,8 +92,30 @@ router.post("/save_chicken", function(req, res){
     });
 });
 
-// return html
+// return html to show chicken list
 router.get("/chickens", function(req, res){
+    console.log("GET chickens html");
+    res.render('chickens/chickens/index.html');
+});
+
+// return html to all data about one chicken
+router.get("/chicken", function(req, res){
+    console.log("GET html to show all data about one chicken");
+    var did = req.query.did;
+
+    Chicken
+        .find({did : did}) // 查询数据库中所有与 query 中 did 相等的数据
+        .select('did steps volt time')// 只取 Chicken 中定义的字段
+        .sort({time:-1}) // 按时间倒序
+        .exec(function(err, chicken_datas){
+        if(err){
+            console.log(err);
+            res.send("There was a problem getting the information from the database.");
+        }
+        else{
+            res.render('sensors_ten/chicken', { did : did, chicken_datas : chicken_datas});
+        }
+    });
     console.log("GET chickens html");
     res.render('chickens/chickens/index.html');
 });
