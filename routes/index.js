@@ -127,7 +127,7 @@ router.get("/chickens_at_hour", function(req, res){
 
     var currentHour = new Date(year, month, day, hour);
     var nextHour = new  Date(year, month, day, hour + 1);
-    console.log("GET chickens from " + req.query);
+    console.log("GET chickens from " + year + "-" + month + "-" + day + " " + hour + ":00:00");
     console.log("GET chickens from " + currentHour + " to " + nextHour);
 
     Chicken
