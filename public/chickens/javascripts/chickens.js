@@ -62,7 +62,7 @@ function tableParameter() {
         //data: generateSampleData(100), //Initiate with data if you already have it
         debug:false,                //Prints some debug info to console
         dataBind: true,             //Auto-updates table when changing data row values. See example below. (Note. You need a column with the 'unique' property)
-        pageSize: 8,                //Initial pagesize
+        pageSize: 10,                //Initial pagesize
         pageSizePadding: true,      //Pads with empty rows when pagesize is not met
         //transition: 'slide',       //Type of transition when paging (bounce, fade, flip, rotate, scroll, slide).Requires https://github.com/daneden/animate.css.
         //transitionDuration: 0.2,    //Duration of transition in seconds.
@@ -70,8 +70,8 @@ function tableParameter() {
         sorting: true,              //Enable sorting
         sortEmptyLast:true,         //Empty values will be shown last
         //columnPicker: true,         //Show the columnPicker button
-        pageSizes: [],  //Set custom pageSizes. Leave empty array to hide button.
-        hidePagerOnEmpty: false,     //Removes the pager if data is empty.
+        pageSizes: [10,50],  //Set custom pageSizes. Leave empty array to hide button.
+        hidePagerOnEmpty: true,     //Removes the pager if data is empty.
         checkboxes: false,           //Make rows checkable. (Note. You need a column with the 'unique' property)
         checkAllToggle:false,        //Show the check-all toggle
         preFill: true,              //Initially fills the table with empty rows (as many as the pagesize).
