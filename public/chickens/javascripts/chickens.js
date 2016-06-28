@@ -241,7 +241,7 @@ function getChickensDataFromServer(date) {
     var url = "http://www.jumacc.com:3000/chickens_at_hour"
         + "?year=" + date.getFullYear()
         + "&month=" + date.getMonth()
-        + "&day=" + date.getDay()
+        + "&day=" + date.getDate()
         + "&hour=" + date.getHours();
 
     var request = new XMLHttpRequest();
