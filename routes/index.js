@@ -120,16 +120,16 @@ router.get("/chicken", function(req, res){
 
 // return all Chicken data at a certain hour
 router.get("/chickens_at_hour", function(req, res){
-    var year = req.query.year;
-    var month = req.query.month;
-    var day = req.query.day;
-    var hour = req.query.hour;
+    // 从 query 中得到的 year 等是 string 类型, 在 string 前使用 +, 会把 string 变成数字
+    var year = +req.query.year;
+    var month = +req.query.month;
+    var day = +req.query.day;
+    var hour = +req.query.hour;
 
     console.log("" + typeof year + " " + typeof month + " " + typeof day + " " + typeof hour);
 
-    var currentHour = new Date(year, month, day, hour, 0, 0);
-    var nextHour    = new Date(year, month, day, hour, 0, 0);
-    nextHour.setHours(nextHour.getHours() + 1);
+    var currentHour = new Date(year, month, day, hour,     0, 0);
+    var nextHour    = new Date(year, month, day, hour + 1, 0, 0);
     console.log("GET chickens from " + year + "-" + month + "-" + day + " " + hour + ":00:00");
     console.log("GET chickens from " + currentHour + " to " + nextHour);
 
