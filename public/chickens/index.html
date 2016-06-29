@@ -31,7 +31,7 @@
 
     $(function(){
         $('#date_foo').appendDtpicker({
-            "current": shownDate,
+            "current": shownDate.getFullYear() + "-" + shownDate.getMonth() + "-" + shownDate.getDate() + " " + shownDate.getHours() + ":00",
             "locale": "cn",
             "firstDayOfWeek": 1, // 把周一作为一周的第一天
             "closeOnSelected": true,

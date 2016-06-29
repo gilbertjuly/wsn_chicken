@@ -88,7 +88,7 @@ function tableParameter() {
             },
             date: {
                 utc: true,            //Show time as universal time, ie without timezones.
-                format: 'yy-dd-MM',   //The format. See all possible formats here http://arshaw.com/xdate/#Formatting.
+                format: 'MM-dd HH:mm:ss',   //The format. See all possible formats here http://arshaw.com/xdate/#Formatting.
                 datePicker: true      //Requires "Datepicker for Bootstrap" plugin (http://www.eyecon.ro/bootstrap-datepicker).
             }
         },
@@ -203,13 +203,17 @@ function renderTable(chickens) {
      row-cls allows you to add css classes to the row(tr) element.
      */
 
+
+    var timezoneOffset = -(new Date()).getTimezoneOffset(); // 返回是分钟
+    timezoneOffset = timezoneOffset * 60 * 1000; // 转换为毫秒
+
     var rows = [];
     for (var i = 0; i < chickens.length; i++) {
         var row = {};
         row.did = chickens[i].did;
         row.steps = chickens[i].steps;
         row.volt = chickens[i].volt;
-        row.time = chickens[i].time;
+        row.time = Date.parse(chickens[i].time) + timezoneOffset;
         rows.push(row);
     }
 
