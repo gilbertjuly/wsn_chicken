@@ -146,7 +146,6 @@ function tableParameter() {
         pageChanged: function(data) {      //Fires when manually changing page
             console.log('page changed');    //data.event holds the original jQuery event
             console.log(data);              //data.page holds the new page index
-            alert("page = " + data.page)
         },
         pageSizeChanged: function(data) {  //Fires when manually changing pagesize
             console.log('pagesize changed');//data.event holds teh original event
@@ -243,6 +242,8 @@ function getChickensDataFromServer(date) {
         + "&month=" + date.getMonth()
         + "&day=" + date.getDate()
         + "&hour=" + date.getHours();
+
+    //alert("chickens url = " + url);
 
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
