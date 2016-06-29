@@ -126,11 +126,8 @@ router.get("/chickens_at_hour", function(req, res){
     var day = +req.query.day;
     var hour = +req.query.hour;
 
-    console.log("" + typeof year + " " + typeof month + " " + typeof day + " " + typeof hour);
-
     var currentHour = new Date(year, month, day, hour,     0, 0);
     var nextHour    = new Date(year, month, day, hour + 1, 0, 0);
-    console.log("GET chickens from " + year + "-" + month + "-" + day + " " + hour + ":00:00");
     console.log("GET chickens from " + currentHour + " to " + nextHour);
 
     Chicken
@@ -150,7 +147,7 @@ router.get("/chickens_at_hour", function(req, res){
                 res.header('Access-Control-Allow-Origin', '*');
                 res.send(JSON.stringify(chickens));
                 //console.log("GET chickens in some page:" + req.query.callback);
-                //console.log("GET chickens in some page:" + JSON.stringify(chickens));
+                console.log("GET chickens in some page:" + JSON.stringify(chickens));
             }
         });
 });
