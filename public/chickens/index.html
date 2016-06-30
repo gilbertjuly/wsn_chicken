@@ -26,6 +26,8 @@
 <script type="text/javascript">
 
     $(function(){
+        alert("shown date = " + shownDate);
+
         $('#date_foo').appendDtpicker({
             "current": shownDate.getFullYear() + "-" + (shownDate.getMonth() + 1) + "-" + shownDate.getDate() + " " + shownDate.getHours() + ":00",
             "locale": "cn",
