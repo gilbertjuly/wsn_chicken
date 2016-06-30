@@ -24,10 +24,14 @@
 
 <input type="text" id="date_foo" value="">
 <script type="text/javascript">
-    var shownDate = new Date();
-    shownDate.setMinutes(0);
-    shownDate.setSeconds(0);
-    shownDate.setMilliseconds(0);
+    var shownDate;
+
+    if (shownDate === undefined) {
+        shownDate = new Date();
+        shownDate.setMinutes(0);
+        shownDate.setSeconds(0);
+        shownDate.setMilliseconds(0);
+    }
 
     $(function(){
         $('#date_foo').appendDtpicker({
