@@ -2,14 +2,14 @@
 var waTable; // 引用创建出来的表的全局变量
 var buffer = {}; // 存储所有从服务器获取的小鸡的数据
 
-var shownDate = new Date(); // 保存当前正在显示的时间
-shownDate.setMinutes(0);
-shownDate.setSeconds(0);
-shownDate.setMilliseconds(0);
-
-//if (shownDate === undefined) {
-//    shownDate = new Date();
-//}
+var shownDate;
+alert("init shownDate = " + shownDate);
+if (shownDate === undefined) {
+    shownDate = new Date();
+    shownDate.setMinutes(0);
+    shownDate.setSeconds(0);
+    shownDate.setMilliseconds(0);
+}
 
 function createTable() {
     //Second example that shows all options.
