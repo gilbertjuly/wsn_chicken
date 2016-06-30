@@ -31,21 +31,29 @@
 
     $(function(){
         $('#date_foo').appendDtpicker({
-            "current": shownDate.getFullYear() + "-" + shownDate.getMonth() + "-" + shownDate.getDate() + " " + shownDate.getHours() + ":00",
+            "current": shownDate.getFullYear() + "-" + (shownDate.getMonth() + 1) + "-" + shownDate.getDate() + " " + shownDate.getHours() + ":00",
             "locale": "cn",
             "firstDayOfWeek": 1, // 把周一作为一周的第一天
             "closeOnSelected": true,
             "onHide": function(handler) {
                 var selectedDate = handler.getDate();
                 selectedDate.setMinutes(0);
+                //alert("select " + dateHourString(selectedDate) + " show " + dateHourString(shownDate));
 
-                if (shownDate != selectedDate) {
+                var notSameHour = (shownDate - selectedDate != 0);
+                //alert("is same hour = " + !notSameHour);
+
+                if (notSameHour) {
                     shownDate = selectedDate;
                     getChickensData(shownDate);
                 }
             }
         });
     });
+
+//    function dateHourString(date) {
+//        return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + date.getHours() + ":00:00"
+//    }
 </script>
 
 <div id="example2" style="width:auto"></div>
