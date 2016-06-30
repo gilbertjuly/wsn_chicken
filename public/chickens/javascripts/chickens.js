@@ -275,6 +275,7 @@ function getChickensDataFromServer(date) {
 }
 
 function getChickensData(date) {
+    alert("get chickens at " + date);
     var chickens = buffer[date];
 
     if (chickens) {
