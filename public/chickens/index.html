@@ -24,12 +24,24 @@
 
 <input type="text" id="date_foo" value="">
 <script type="text/javascript">
+    // 保存 date time picker 中正在显示的时间
+    if (sessionStorage.showingDate === undefined) {
+        alert("init showing daate");
+        sessionStorage.showingDate = new Date();
+        sessionStorage.showingDate.setMinutes(0);
+        sessionStorage.showingDate.setSeconds(0);
+        sessionStorage.showingDate.setMilliseconds(0);
+    }
 
     $(function(){
-        alert("shown date = " + shownDate);
+
+        function datePickerInputTextValue(date) {
+            alert("showing date = " + sessionStorage.showingDate);
+            return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":00"
+        }
 
         $('#date_foo').appendDtpicker({
-            "current": shownDate.getFullYear() + "-" + (shownDate.getMonth() + 1) + "-" + shownDate.getDate() + " " + shownDate.getHours() + ":00",
+            "current": datePickerInputTextValue(sessionStorage.showingDate),
             "locale": "cn",
             "firstDayOfWeek": 1, // 把周一作为一周的第一天
             "closeOnSelected": true,
