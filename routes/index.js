@@ -147,7 +147,8 @@ router.get("/chickens_at_hour", function(req, res){
                 res.header('Access-Control-Allow-Origin', '*');
                 res.send(JSON.stringify(chickens));
                 //console.log("GET chickens in some page:" + req.query.callback);
-                console.log("GET chickens in some page:" + JSON.stringify(chickens));
+                console.log("GET " + chickens.length + " chickens");
+                console.log(JSON.stringify(chickens));
             }
         });
 });
