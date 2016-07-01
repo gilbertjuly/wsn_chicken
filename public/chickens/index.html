@@ -22,60 +22,72 @@
 </head>
 <body>
 
+<script>
+    var ShowingDateStorage = {
+        key: 'showingDate',
+        save: function (date) {
+            sessionStorage.setItem(this.key, date);
+        },
+        read: function () {
+            var dateStr = sessionStorage.getItem(this.key);
+
+            if (dateStr) {
+                return new Date(dateStr);
+            } else {
+                var date = new Date();
+                date.setMinutes(0);
+                date.setSeconds(0);
+                date.setMilliseconds(0);
+                this.save(date);
+                //alert("init showing date = " + date);
+                return date;
+            }
+        },
+    }
+</script>
+
 <input type="text" id="date_foo" value="">
 <script type="text/javascript">
-    // 保存 date time picker 中正在显示的时间
-    if (sessionStorage.showingDate === undefined) {
-        alert("init showing daate");
-        sessionStorage.showingDate = new Date();
-        sessionStorage.showingDate.setMinutes(0);
-        sessionStorage.showingDate.setSeconds(0);
-        sessionStorage.showingDate.setMilliseconds(0);
-    }
 
     $(function(){
-
-        function datePickerInputTextValue(date) {
-            alert("showing date = " + sessionStorage.showingDate);
-            return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":00"
-        }
+        var date = ShowingDateStorage.read();
+//        alert("showing date = " + typeof date + " " + date);
+        var dateString = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+        var timeString = date.getHours() + ":00";
 
         $('#date_foo').appendDtpicker({
-            "current": datePickerInputTextValue(sessionStorage.showingDate),
+            "current": dateString + " " + timeString,
             "locale": "cn",
             "firstDayOfWeek": 1, // 把周一作为一周的第一天
             "closeOnSelected": true,
             "onHide": function(handler) {
+                var showingDate = ShowingDateStorage.read();
                 var selectedDate = handler.getDate();
-                selectedDate.setMinutes(0);
-                //alert("select " + dateHourString(selectedDate) + " show " + dateHourString(shownDate));
+                selectedDate.setMinutes(0); // 按设计, 只需要按小时查看所有小鸡的数据
+//                alert("select " + selectedDate + " show " + showingDate);
 
-                var notSameHour = (shownDate - selectedDate != 0);
-                //alert("is same hour = " + !notSameHour);
+                var notSameHour = (showingDate - selectedDate !== 0);
+//                alert("is same hour = " + !notSameHour);
 
                 if (notSameHour) {
-                    shownDate = selectedDate;
-                    getChickensData(shownDate);
+                    ShowingDateStorage.save(selectedDate);
+                    getChickensData(selectedDate);
                 }
             }
         });
     });
-
-//    function dateHourString(date) {
-//        return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + date.getHours() + ":00:00"
-//    }
 </script>
 
 <div id="example2" style="width:auto"></div>
 <script type="text/javascript">
 
     $(document).ready( function() {
-        alert("create table");
+//        alert("create table");
 
         createTable();
 
         // 请求数据
-        getChickensData(shownDate);
+        getChickensData(ShowingDateStorage.read());
     });
 
 </script>
