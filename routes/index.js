@@ -1,7 +1,8 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var Chicken = require('./../models/chicken.js')
-var Sensor = require('./../models/sensor.js')
+var Chicken = require('./../models/chicken.js');
+var Sensor = require('./../models/sensor.js');
+var Log = require('./../models/log.js');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -13,41 +14,145 @@ router.get("/about", function(req, res){
     res.render('index', { title: 'JUMA' });
 });
 
-/*
- * Chicken Related
- */
-router.get("/chicken", function(req, res){
-    var id = req.query.id;
-    var motion = req.query.motion;
+/************************* Log ***************************/
 
-    var chicken = new Chicken({ id: id, 
-                                motion: motion});
-    chicken.save(function(err){
+router.get("/save_log", function(req, res){
+    var log= new Log({ log: req.query.log});
+    log.save(function(err){
         if(err){
             console.log(err);
-            res.send("There was a problem adding the information to the database.");
+            res.json({"status":"ERROR", "msg": err});
         }
         else{
-            console.log('GET creating new chicken: ' + chicken);
-            //res.json(chicken);
-            res.send("OK");
+            console.log('GET creating new log: ' + log);
+            res.json({"status":"OK"});
         }
     });
 });
 
-router.get('/chickens', function(req, res) {
-    Chicken.find().sort({created_at:-1}).limit(10).exec(function(err, chickens){
-      if(err){
+router.get("/read_logs", function(req, res){
+    Log.find().exec(function(err, logs){
+        if(err){
             console.log(err);
             res.send("There was a problem getting the information from the database.");
         }
         else{
             //console.log('GET getting chickens');
             //res.json(chickens);
-            res.render('chickens/index', { chickens : chickens });
-        }   
+            //sensors.reverse();
+            res.render('chickens/log.ejs', { logs : logs});
+        }
     });
 });
+
+/************************* Log ***************************/
+
+/************************* Chicken ***************************/
+// save Chicken data from GET request
+router.get("/save_chicken", function(req, res){
+    var did = req.query.did;
+    var steps = req.query.steps;
+    var volt = req.query.volt;
+
+    var chicken= new Chicken({ did: did,
+        steps: steps,
+        volt: volt});
+    chicken.save(function(err){
+        if(err){
+            console.log(err);
+            res.json({"status":"ERROR"});
+        }
+        else{
+            console.log('GET creating new chicken: ' + chicken);
+            //res.render("sensor/result");
+            res.json({"status":"OK"});
+        }
+    });
+});
+
+// save Chicken data from POST request
+router.post("/save_chicken", function(req, res){
+    var did = req.body.did;
+    var steps = req.body.steps;
+    var volt = req.body.volt;
+
+    var chicken= new Chicken({ did: did,
+        steps: steps,
+        volt: volt});
+    chicken.save(function(err){
+        if(err){
+            console.log(err);
+            res.json({"status":"ERROR"});
+        }
+        else{
+            console.log('GET creating new chicken: ' + chicken);
+            //res.render("sensor/result");
+            res.json({"status":"OK"});
+        }
+    });
+});
+
+// return html to show chicken list
+router.get("/chickens", function(req, res){
+    console.log("GET chickens html");
+    res.render('chickens/chickens/index.html');
+});
+
+// return html to all data about one chicken
+router.get("/chicken", function(req, res){
+    console.log("GET html to show all data about one chicken");
+    var did = req.query.did;
+
+    Chicken
+        .find({did : did}) // 查询数据库中所有与 query 中 did 相等的数据
+        .select('did steps volt time')// 只取 Chicken 中定义的字段
+        .sort({time:-1}) // 按时间倒序
+        .exec(function(err, chicken_datas){
+        if(err){
+            console.log(err);
+            res.send("There was a problem getting the information from the database.");
+        }
+        else{
+            res.render('chickens/chicken.ejs', { did : did, chicken_datas : chicken_datas});
+        }
+    });
+});
+
+// return all Chicken data at a certain hour
+router.get("/chickens_at_hour", function(req, res){
+    // 从 query 中得到的 year 等是 string 类型, 在 string 前使用 +, 会把 string 变成数字
+    var year = +req.query.year;
+    var month = +req.query.month;
+    var day = +req.query.day;
+    var hour = +req.query.hour;
+
+    var currentHour = new Date(year, month, day, hour,     0, 0);
+    var nextHour    = new Date(year, month, day, hour + 1, 0, 0);
+    console.log("GET chickens from " + currentHour + " to " + nextHour);
+
+    Chicken
+        .find()
+        .where('time').gte(currentHour).lt(nextHour)
+        //.$where(function () {
+        //    return this.time >= currentHour && this.time < nextHour;
+        //})
+        .exec(function(err, chickens){
+            if(err){
+                console.log("error: " + err);
+                res.send("There was a problem getting the information from the database." + err);
+            }
+            else{
+                res.header('Content-type','application/json');
+                res.header('Charset','utf8');
+                res.header('Access-Control-Allow-Origin', '*');
+                res.send(JSON.stringify(chickens));
+                //console.log("GET chickens in some page:" + req.query.callback);
+                console.log("GET " + chickens.length + " chickens");
+                //console.log(JSON.stringify(chickens));
+            }
+        });
+});
+/************************* Chicken ***************************/
 
 /*
  * SENSOR Related
@@ -94,7 +199,7 @@ router.get("/sensors", function(req, res){
         else{
             res.header('Content-type','application/json');
             res.header('Charset','utf8');
-            res.send(req.query.callback + '('+ JSON.stringify(sensors) + ');');
+            res.send(JSON.stringify(sensors));
             console.log("GET sensors:" + req.query.callback);
             console.log("GET sensors:" + JSON.stringify(sensors));
         } 
@@ -110,6 +215,8 @@ router.get("/sensors", function(req, res){
         offset = 0;
     else
         offset = Number(offset);
+
+    console.log("offset = " + offset + ", count = " + count);
 
     if( (typeof id !== 'undefined' && id ) && 
         (typeof type !== 'undefined' && type)){

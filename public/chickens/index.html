@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+
+    <script type="text/javascript" src="./javascripts/jquery.js"></script>
+    <script type="text/javascript" src="./javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./javascripts/chickens.js"></script>
+    <script type="text/javascript" src="./javascripts/jquery.watable.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./javascripts/jquery.simple-dtpicker.js"></script>
+
+    <link rel='stylesheet' href="./stylesheets/bootstrap.min.css" />
+    <link rel='stylesheet' href='./stylesheets/watable.css'/>
+    <link rel='stylesheet' href="./stylesheets/jquery.simple-dtpicker.css" />
+    <style type="text/css">body { padding: 0px; font-size: 12px }</style>
+
+</head>
+<body>
+
+<script>
+    // 在微信公众号中, 跳转到下一个页面在返回当前页时, 页面会重新加载, 如果不用 sessionStorage 存储 showingDate, 那么它就会被重新初始
+    // 化, 然后重新请求并填充到表格中的数据很可能与原先显示的数据不同.
+    var ShowingDateStorage = {
+        key: 'showingDate',
+        save: function (date) {
+            sessionStorage.setItem(this.key, date);
+        },
+        read: function () {
+            var dateStr = sessionStorage.getItem(this.key);
+            //alert("read stored showing date = " + typeof date + " " + date);
+
+            if (dateStr) {
+                return new Date(dateStr);
+            } else {
+                var date = new Date();
+                date.setMinutes(0);
+                date.setSeconds(0);
+                date.setMilliseconds(0);
+                this.save(date);
+                //alert("init showing date = " + date);
+                return date;
+            }
+        },
+    }
+</script>
+
+<input type="text" id="date_foo" value="">
+<script type="text/javascript">
+
+    $(function(){
+        var date = ShowingDateStorage.read();
+        var dateString = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+        var timeString = date.getHours() + ":00";
+
+        $('#date_foo').appendDtpicker({
+            "current": dateString + " " + timeString,
+            "locale": "cn",
+            "firstDayOfWeek": 1, // 把周一作为一周的第一天
+            "closeOnSelected": true,
+            "onHide": function(handler) {
+                var showingDate = ShowingDateStorage.read();
+                var selectedDate = handler.getDate();
+                selectedDate.setMinutes(0); // 按设计, 只需要按小时查看所有小鸡的数据
+//                alert("select " + selectedDate + " show " + showingDate);
+
+                var notSameHour = (showingDate - selectedDate !== 0);
+//                alert("is same hour = " + !notSameHour);
+
+                if (notSameHour) {
+                    ShowingDateStorage.save(selectedDate);
+                    getChickensData(selectedDate);
+                }
+            }
+        });
+    });
+</script>
+
+<div id="example2" style="width:auto"></div>
+<script type="text/javascript">
+
+    $(document).ready( function() {
+        //alert("create table");
+
+        createTable();
+
+        // 请求数据
+        getChickensData(ShowingDateStorage.read());
+    });
+
+</script>
+
+
+</body>
+</html>
