@@ -161,7 +161,7 @@ function renderTable(chickens) {
             index: 1, //The order this column should appear in the table
             type: "string", //The type. Possible are string, number, bool, date(in milliseconds).
             friendly: "设备",  //Name that will be used in header. Can also be any html as shown here.
-            format: "<a href=http://www.jumacc.com:3000/chicken?did={0} target='_blank'>{0}</a>",  //Used to format the data anything you want. Use {0} as placeholder for the actual data.
+            format: "<a href=http://www.jumacc.com:3000/chicken?did={0} target='_parent'>{0}</a>",  //Used to format the data anything you want. Use {0} as placeholder for the actual data.
             unique: true,  //This is required if you want checkable rows, databinding or to use the rowClicked callback. Be certain the values are really unique or weird things will happen.
             sortOrder: "asc", //Data will initially be sorted by this column. Possible are "asc" or "desc"
             tooltip: "This column has an initial filter", //Show some additional info about column
@@ -231,6 +231,19 @@ function renderTable(chickens) {
     //setDateTimePicker(); // 必须在时间输入框创建完成之后再设置 picker, 当前选择的时机过早
 }
 
+function setDateTimePicker() {
+    // id = date_date_picker 的元素是写死在 jquery.watable.js 中的
+    $('#date_date_picker').appendDtpicker({
+//            "current": shownDate,
+        "locale": "cn",
+        "firstDayOfWeek": 1, // 把周一作为一周的第一天
+        "closeOnSelected": true,
+        "onHide": function(handler) {
+            // to do
+        }
+    });
+}
+
 
 ////////////// net
 //function getData(url, handler) {
@@ -266,25 +279,13 @@ function getChickensDataFromServer(date) {
 }
 
 function getChickensData(date) {
-    alert("get chickens at " + date);
     var chickens = buffer[date];
+    //alert("get chickens at " + typeof date + " " + date);
 
-    if (chickens) {
+    if (chickens && chickens.length > 0) {
+        //alert("从 buffer 获取到 " + chickens.length + " 个数据");
         renderTable(chickens)
     } else {
         getChickensDataFromServer(date);
     }
-}
-
-function setDateTimePicker() {
-    // id = date_date_picker 的元素是写死在 jquery.watable.js 中的
-    $('#date_date_picker').appendDtpicker({
-//            "current": shownDate,
-        "locale": "cn",
-        "firstDayOfWeek": 1, // 把周一作为一周的第一天
-        "closeOnSelected": true,
-        "onHide": function(handler) {
-            // to do
-        }
-    });
 }
