@@ -3,28 +3,97 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <title><%= did %></title>
 
-    <title>
-        <% did %>
-    </title>
+    <script type="text/javascript" src="/chickens/javascripts/echarts.js"></script>
+
+    <style type="text/css">
+        div.chart {
+            width: 640px;
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
 
-<p></p>
-<input class="pos_abs" type="button" value="刷新" onclick="location.reload()">
-<p></p>
+<!--<br />-->
+<!--<input class="pos_abs" type="button" value="刷新" onclick="location.reload()">-->
+<!--<br />-->
 
+<!--生成用于绘制 chart 的 div 元素-->
+<% for (var i = 0; i< div_count; i++) {  %>
+<div class="chart"></div>
+<br />
+<% } %>
+
+<script>
+    function timelineGenerator(length) {
+        var result = [];
+        for (var i = 0; i < length; i++) {
+            result.push('' + i);
+        }
+        return result;
+    }
+
+    var chicken_steps_by_day = JSON.parse('<%- chicken_steps_by_day %>');
+
+    for (var i = 0; i< chicken_steps_by_day.length; i++) {
+        var setps_in_day = chicken_steps_by_day[i];
+        var chart = echarts.init((document.getElementsByClassName("chart"))[i])
+        var option = {
+            title: {
+                text: setps_in_day.dateString,
+                left: 'center',
+                bottom: 'bottom'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '0',
+                right: '50',
+                top: '40',
+                bottom: '35',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                name: '小时',
+                boundaryGap: false,
+                data: timelineGenerator(setps_in_day.stepValues.length)
+            },
+            yAxis: {
+                type: 'value',
+                name: '步数',
+                max: 2000,
+                min: 0,
+            },
+            series: [
+                {
+                    name:'步数',
+                    type:'line',
+                    smooth: true,
+                    data:setps_in_day.stepValues
+                }
+            ]
+        }
+        chart.setOption(option)
+    }
+</script>
 
 <div id="list">
-    <% var i = 0 %>
     <% chicken_datas.forEach( function ( item ){ %>
-    <% i++ %>
+    <% var month = item.time.getMonth() + 1 %>
+    <% if (month < 10) month = "0" + month %>
+    <% var day = item.time.getDate() %>
+    <% if (day < 10) day = "0" + day %>
+    <% var dateString = item.time.getFullYear() + "-" + month + "-" + day + " " + item.time.toTimeString().split(" ")[0] %>
     <div class="item-new">
         <p>
-            did = <%= item.did %>, steps = <%= item.steps %>, volt = <%= item.volt %>, time = <%= item.time %>
+            <%= dateString %> 步数 <%= item.steps %>, 电压 <%= item.volt %>
         </p>
     </div>
-    <% }); %>
+    <% }) %>
 </div>
 
 </body>
