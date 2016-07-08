@@ -5,6 +5,21 @@ var Sensor = require('./../models/sensor.js');
 var Log = require('./../models/log.js');
 var router = express.Router();
 
+
+/************************* helper function ***************************/
+Array.prototype.first = function () {
+    return this[0];
+};
+
+Array.prototype.last = function () {
+    return this[this.length - 1];
+};
+
+Date.prototype.isSameDay = function (otherDate) {
+    return this.getFullYear === otherDate.getFullYear && this.getMonth === otherDate.getMonth && this.getDate() === otherDate.getDate();
+};
+/************************* helper function ***************************/
+
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'JUMA' });
 });
@@ -100,8 +115,8 @@ router.get("/chickens", function(req, res){
 
 // return html to all data about one chicken
 router.get("/chicken", function(req, res){
-    console.log("GET html to show all data about one chicken");
     var did = req.query.did;
+    console.log("GET html to show all data about one chicken " + did);
 
     Chicken
         .find({did : did}) // 查询数据库中所有与 query 中 did 相等的数据
@@ -112,8 +127,159 @@ router.get("/chicken", function(req, res){
             console.log(err);
             res.send("There was a problem getting the information from the database.");
         }
-        else{
-            res.render('chickens/chicken.ejs', { did : did, chicken_datas : chicken_datas});
+        else {
+            var millsecondsInOneHour = 1000 * 3600;
+            var uint16max = 65535;
+
+            chicken_datas.checkMissingData = function (callback) {
+                var result = [ this.first() ];
+                console.log("data 0 = " + JSON.stringify(this.first()));
+
+                for (var i = 1; i < this.length; i++) {
+                    var previousData = this[i - 1];
+                    var currentData = this[i];
+
+                    // 检查时间间隔, 向下取整
+                    var hourDelta = Math.floor((previousData.time.getTime() - currentData.time.getTime()) / millsecondsInOneHour);
+
+                    if (hourDelta > 1) {
+                        var stepsDelta = previousData.steps - currentData.steps;
+                        var insertedDatas = callback(previousData, stepsDelta, hourDelta);
+
+                        for (var x = 0; x < insertedDatas.length; x++) {
+                            result.push(insertedDatas[x]);
+                            console.log("inserting " + JSON.stringify(result.last()));
+                        }
+                    }
+
+                    console.log("data " + i + " = " + JSON.stringify(currentData) + ", hour delta = " + hourDelta);
+                    result.push(currentData);
+                }
+
+                return result;
+            };
+
+            chicken_datas.insertAndEven = function () {
+                if (this.length < 2) return this;
+
+                return this.checkMissingData(function (previousData, stepsDelta, hourDelta) {
+                    var stepsDeltaInOneHour = 0;
+                    var insertedDatas = [];
+
+                    if (stepsDelta > 0) {
+                        stepsDeltaInOneHour = stepsDelta / hourDelta;
+                    } else if (stepsDelta < 0) {
+                        stepsDeltaInOneHour = (stepsDelta + 1 + uint16max) / hourDelta;
+                    }
+
+                    stepsDeltaInOneHour = Math.floor(stepsDeltaInOneHour);
+
+                    // 应该插入 hourDelta - 1 个数据
+                    for (var j = 1; j < hourDelta; j++) {
+                        var insertedDate = new Date(previousData.time.getTime() - j * millsecondsInOneHour);
+
+                        var insertedSteps = previousData.steps - j * stepsDeltaInOneHour;
+                        if (insertedSteps < 0) {
+                            insertedSteps += (uint16max + 1);
+                        }
+
+                        var insertedData = {
+                            did: previousData.did,
+                            steps: insertedSteps,
+                            volt: previousData.volt,
+                            time: insertedDate
+                        };
+
+                        insertedDatas.push(insertedData);
+                    }
+
+                    return insertedDatas;
+                });
+            }
+
+            // 插入数据
+            chicken_datas = chicken_datas.insertAndEven();
+
+            chicken_datas.splitByDay = function () {
+                if (this.length === 0) return [];
+
+                var days = [[ this.first() ]];
+                var previousData = days.first().first();
+
+                for (var i = 1; i < this.length; i++) {
+                    var currentData = this[i];
+
+                    if (currentData.time.isSameDay(previousData.time)) {
+                        days.last().push(currentData);
+                    } else {
+                        days.push([currentData]);
+                    }
+
+                    previousData = currentData;
+                }
+
+                return days;
+            };
+
+            // 按天分组, 结构 [[Chicken]]
+            var chicken_data_by_day = chicken_datas.splitByDay();
+
+            // 在某一天内部按正序排序
+            for (i = 0; i < chicken_data_by_day.length; i++) {
+                chicken_data_by_day[i].reverse();
+                //console.log(JSON.stringify(chicken_data_by_day[i]));
+            }
+
+            console.log("按天分组的个数 = " + chicken_data_by_day.length);
+            
+            //  按天对步数分组
+            var chicken_steps_by_day = [];
+            for (var i = 0; i < chicken_data_by_day.length; i++) {
+                var data_in_current_day = chicken_data_by_day[i];
+                var first_data_current_day = data_in_current_day[0];
+                console.log("current = " + JSON.stringify(first_data_current_day));
+
+                var data_in_previous_day = chicken_data_by_day[i+1];
+                if (i + 1 === chicken_data_by_day.length) {
+                    data_in_previous_day = [{steps: first_data_current_day.steps}];
+                }
+                var last_data_previous_day = data_in_previous_day[data_in_previous_day.length - 1];
+                console.log("previous = " + JSON.stringify(last_data_previous_day));
+
+                var stepDeltas = [first_data_current_day.steps - last_data_previous_day.steps];
+                for (var j = 1; j < data_in_current_day.length; j++) {
+                    var delta = data_in_current_day[j].steps - data_in_current_day[j-1].steps;
+                    if (delta < 0) {
+                        delta += (uint16max + 1);
+                    }
+                    stepDeltas.push(delta);
+                }
+
+                var date = first_data_current_day.time;
+                var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
+                var chicken_in_current_day = { dateString: dateString, stepValues: stepDeltas };
+                chicken_steps_by_day.push(chicken_in_current_day);
+            }
+
+            //var chicken_steps_by_day = chicken_data_by_day.map(function (data_in_day) {
+            //    var date = data_in_day[0].time;
+            //    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            //
+            //    var stepDeltas = [data_in_day[0].steps - chicken_data_by_day[day+1].last()];
+            //    for (var i = 1; i < data_in_day.length; i++) {
+            //        var delta = data_in_day[i].steps - data_in_day[i-1].steps;
+            //        stepDeltas.push(delta);
+            //    }
+            //
+            //    return { dateString: dateString, stepValues: stepDeltas };
+            //});
+
+            chicken_steps_by_day.forEach(function (item) {
+                console.log(item.dateString + ", " + item.stepValues.length + " 个步数值, " + item.stepValues);
+            });
+
+            res.render('chickens/chicken.ejs', { did : did, chicken_datas : chicken_datas, div_count: chicken_steps_by_day.length, chicken_steps_by_day: JSON.stringify(chicken_steps_by_day)});
         }
     });
 });
