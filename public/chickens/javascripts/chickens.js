@@ -244,7 +244,6 @@ function setDateTimePicker() {
     });
 }
 
-
 ////////////// net
 //function getData(url, handler) {
 //    var request = new XMLHttpRequest();
