@@ -229,6 +229,71 @@ function renderTable(chickens) {
 
     waTable.setData(data);
     //setDateTimePicker(); // 必须在时间输入框创建完成之后再设置 picker, 当前选择的时机过早
+
+    // 设置图表
+    var chart = echarts.init(document.getElementById("chickens_card"));
+    var hours = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+    var days = ['Saturday', 'Friday', 'Thursday', 'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
+
+    var chartDatas = [];
+    for (var i = 0; i < chickens.length; i++) {
+        var xAxis = i / hours.length;
+        var yAxis = i % hours.length;
+        chartDatas.push([xAxis, yAxis, chickens[i].steps])
+    }
+
+    var option = {
+        tooltip: {
+            position: 'top'
+        },
+        animation: false,
+        grid: {
+            height: '50%',
+            y: '10%'
+        },
+        xAxis: {
+            type: 'category',
+            data: hours,
+            splitArea: {
+                show: true
+            }
+        },
+        yAxis: {
+            type: 'category',
+            data: days,
+            splitArea: {
+                show: true
+            }
+        },
+        visualMap: {
+            min: 0,
+            max: 10,
+            calculable: true,
+            orient: 'horizontal',
+            left: 'center',
+            bottom: '15%'
+        },
+        series: [{
+            name: 'Punch Card',
+            type: 'heatmap',
+            data: chartDatas,
+            label: {
+                normal: {
+                    show: true
+                }
+            },
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+    chart.setOption(option);
+    chart.on('click', function(event){
+        alert(event.seriesIndex + ',' + event.dataIndex + ' = ' + event.data)
+    })
 }
 
 function setDateTimePicker() {
