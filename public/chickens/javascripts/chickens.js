@@ -231,15 +231,29 @@ function renderTable(chickens) {
     //setDateTimePicker(); // 必须在时间输入框创建完成之后再设置 picker, 当前选择的时机过早
 
     // 设置图表
-    var chart = echarts.init(document.getElementById("chickens_card"));
-    var hours = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-    var days = ['Saturday', 'Friday', 'Thursday', 'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
+    var divContainer = document.getElementById("chickens_card");
+    var chart = echarts.init(divContainer);
+
+    if (chickens.length == 0) {
+        divContainer.style.height = 0;
+        chart.resize();
+        return;
+    }
+
+    var hours = Array.repeatValue('', 24);
+    hours = Array.initWithSize(24, function (index) {
+       return index + 1;
+    });
+    var days = Array.repeatValue('', Math.ceil(chickens.length / hours.length));
+    days = Array.initWithSize(Math.ceil(chickens.length / hours.length), function (index) {
+        return index + 1;
+    });
 
     var chartDatas = [];
     for (var i = 0; i < chickens.length; i++) {
-        var xAxis = i / hours.length;
-        var yAxis = i % hours.length;
-        chartDatas.push([xAxis, yAxis, chickens[i].steps])
+        var column = i % hours.length;
+        var row = Math.floor(i / hours.length);
+        chartDatas.push([column, row, chickens[i].steps]);
     }
 
     var option = {
@@ -248,8 +262,10 @@ function renderTable(chickens) {
         },
         animation: false,
         grid: {
-            height: '50%',
-            y: '10%'
+            left: 50,
+            right: 50,
+            top: 20,
+            bottom: 100,
         },
         xAxis: {
             type: 'category',
@@ -267,11 +283,11 @@ function renderTable(chickens) {
         },
         visualMap: {
             min: 0,
-            max: 10,
+            max: 65535,
             calculable: true,
             orient: 'horizontal',
             left: 'center',
-            bottom: '15%'
+            bottom: '20'
         },
         series: [{
             name: 'Punch Card',
@@ -283,6 +299,10 @@ function renderTable(chickens) {
                 }
             },
             itemStyle: {
+                //normal: {
+                //    borderWidth: 0.5,
+                //    borderColor: 'white'//'rgb(237, 237, 237)'
+                //},
                 emphasis: {
                     shadowBlur: 10,
                     shadowColor: 'rgba(0, 0, 0, 0.5)'
@@ -290,10 +310,35 @@ function renderTable(chickens) {
             }
         }]
     };
+
     chart.setOption(option);
+
+    divContainer.style.height = (option.grid.top + option.grid.bottom + days.length * 31) + 'px';
+    chart.resize();
+
     chart.on('click', function(event){
-        alert(event.seriesIndex + ',' + event.dataIndex + ' = ' + event.data)
+        var did = chickens[event.dataIndex].did;
+        alert("index = " + event.dataIndex + ', did = ' + did);
+        window.open("http://www.jumacc.com:1883/chicken?did=" + did);
     })
+}
+
+Array.repeatValue = function (repeatedValue, count) {
+    var array = [];
+    for (var i = 0; i < count; i++) {
+        array.push(repeatedValue);
+    }
+    return array;
+};
+
+Array.initWithSize = function (size, callback) {
+    var array = new Array(size);
+    if (callback) {
+        for (var i = 0; i < size; i++) {
+            array[i] = callback(i);
+        }
+    }
+    return array;
 }
 
 function setDateTimePicker() {
