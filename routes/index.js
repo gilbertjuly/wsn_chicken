@@ -117,7 +117,8 @@ router.get("/chickens_chart", function(req, res){
     var year = +req.query.year;
     var month = +req.query.month;
     var day = +req.query.day;
-    console.log("查看 " + year + '-' + month + '-' + day + " 的小鸡图表");
+    var dateString = year + '-' + month + '-' + day;
+    console.log("查看 " + dateString + " 的小鸡图表");
 
     var currentWeeHours = new Date(year, month - 1, day);
     var nextWeeHours = new Date(year, month - 1, day + 1);
@@ -136,38 +137,79 @@ router.get("/chickens_chart", function(req, res){
                 return;
             }
 
+            if (chickenDatas.length === 0) {
+                res.send("未在数据库中查找到 " + dateString + "的数据");
+                return;
+            }
+
             chickenDatas = chickenDatas.map(function (item) {
                 return {did: item.did, steps: item.steps, time: item.time}
             });
 
             // 按 did 分组
-            var did_data_dicts = [
-                {
-                    did: chickenDatas.first().did,
-                    datas: [chickenDatas.first()]
-                }
-            ];
+            var groupedChickenDatas = [[chickenDatas.first()]];
 
             for (var i = 1; i < chickenDatas.length; i++) {
                 var data = chickenDatas[i];
-                var did = data.did;
-                //console.log("origin = " + JSON.stringify(data));
+                var lastArray = groupedChickenDatas.last();
 
-                var lastDict = did_data_dicts.last();
-                console.log("lastDict = " + JSON.stringify(lastDict));
-
-                if (lastDict.did == did) {
-                    lastDict.datas.push(data);
+                if (lastArray.first().did == data.did) {
+                    lastArray.push(data);
                 } else {
-                    var dict = {did: did, datas: [data]};
-                    did_data_dicts.push(dict);
+                    groupedChickenDatas.push([data]);
                 }
             }
 
-            for (var i = 0; i < did_data_dicts.length; i++) {
-                console.log("did dict = " + JSON.stringify(did_data_dicts[i]));
+            for (var i = 0; i < groupedChickenDatas.length; i++) {
+                console.log("did dict = " + JSON.stringify(groupedChickenDatas[i]));
             }
+            return;
 
+            // 波峰 crest
+            // 波谷 trough
+            //for (var i = 0; i < did_data_dicts.length; i++) {
+            //    var data = chickenDatas[i];
+            //    var did = data.did;
+            //    //console.log("origin = " + JSON.stringify(data));
+            //
+            //    var lastDict = did_data_dicts.last();
+            //
+            //    if (lastDict.did == did) {
+            //        lastDict.datas.push(data);
+            //    } else {
+            //        var dict = {did: did, datas: [data]};
+            //        did_data_dicts.push(dict);
+            //    }
+            //}
+            //
+            //var did_health_dicts = did_data_dicts.map(function (data_dict) {
+            //    var health_dict = {did: data_dict.did, health: 0};
+            //
+            //    if (data_dict.datas.length >= 20) {
+            //        // 按步数从小到大排序
+            //        var sortedDatas = data_dict.datas.sort(function (item1, item2) {
+            //            return item1.steps > item2.steps
+            //        });
+            //
+            //    }
+            //
+            //    // 数据中 0 出现的次数太多
+            //    var invalidDatas = data_dict.datas.filter(function (data) {
+            //        return data.steps === 0;
+            //    });
+            //    if (data_dict.datas.length > 5) return health_dict;
+            //
+            //    // 数据太少
+            //    if (invalidDatas.length < 12) {
+            //        health_dict.health = 1;
+            //        return health_dict;
+            //    }
+            //
+            //
+            //
+            //})
+
+            res.json(did_data_dicts);
             //console.log("chickens chart = " + JSON.stringify(did_data_dicts));
 
         })
