@@ -135,7 +135,7 @@ router.get("/chickens_chart", function(req, res){
                 res.send("error occur: " + err);
                 return;
             }
-            
+
             chickenDatas = chickenDatas.map(function (item) {
                 return {did: item.did, steps: item.steps, time: item.time}
             });
@@ -145,7 +145,7 @@ router.get("/chickens_chart", function(req, res){
             for (var i = 0; i < chickenDatas.length; i++) {
                 var data = chickenDatas[i];
                 var did = data.did;
-                console.log("origin = " + JSON.stringify(data));
+                //console.log("origin = " + JSON.stringify(data));
 
                 var lastDict = did_data_dicts.last;
 
@@ -156,6 +156,9 @@ router.get("/chickens_chart", function(req, res){
                 } else {
                     lastDict[did].push(data);
                 }
+
+
+                console.log("origin = " + JSON.stringify(did_data_dicts.last()));
             }
 
             //console.log("chickens chart = " + JSON.stringify(did_data_dicts));
