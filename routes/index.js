@@ -119,8 +119,8 @@ router.get("/chickens_chart", function(req, res){
     var day = +req.query.day;
     console.log("查看 " + year + '-' + month + '-' + day + " 的小鸡图表");
 
-    var currentWeeHours = new Date(year, month, day);
-    var nextWeeHours = new Date(year, month, day + 1);
+    var currentWeeHours = new Date(year, month - 1, day);
+    var nextWeeHours = new Date(year, month - 1, day + 1);
 
     console.log(currentWeeHours.toISOString() + ' == ' + nextWeeHours.toISOString());
 
@@ -136,8 +136,8 @@ router.get("/chickens_chart", function(req, res){
                 res.send("error occur: " + err);
                 return;
             }
-            
-            console.log("chickens chart = " + JSON.stringify(did_data_dicts));
+
+            console.log("chickens chart = " + JSON.stringify(chickenDatas));
 
             // 按 did 分组, [{did : chickenData}]
             var did_data_dicts = [];
