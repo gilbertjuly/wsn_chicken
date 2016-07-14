@@ -135,6 +135,10 @@ router.get("/chickens_chart", function(req, res){
                 res.send("error occur: " + err);
                 return;
             }
+            
+            chickenDatas = chickenDatas.map(function (item) {
+                return {did: item.did, steps: item.steps, time: item.time}
+            });
 
             // 按 did 分组, [{did : chickenData}]
             var did_data_dicts = [];
