@@ -148,13 +148,14 @@ router.get("/chickens_chart", function(req, res){
                 //console.log("origin = " + JSON.stringify(data));
 
                 var lastDict = did_data_dicts.last;
+                var lastDictArray = lastDict[did];
 
-                if (!lastDict[did]) {
+                if (lastDictArray === undefined) {
                     var dict = {};
                     dict[did] = [data];
                     did_data_dicts.push(dict);
                 } else {
-                    lastDict[did].push(data);
+                    lastDictArray.push(data);
                 }
 
 
