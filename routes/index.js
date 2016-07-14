@@ -157,9 +157,10 @@ router.get("/chickens_chart", function(req, res){
                 } else {
                     lastDictArray.push(data);
                 }
+            }
 
-
-                console.log("origin = " + JSON.stringify(did_data_dicts.last()));
+            for (var i = 0; i < did_data_dicts.length; i++) {
+                console.log("did dict = " + JSON.stringify(did_data_dicts[i]));
             }
 
             //console.log("chickens chart = " + JSON.stringify(did_data_dicts));
