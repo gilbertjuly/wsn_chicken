@@ -127,7 +127,6 @@ router.get("/chickens_chart", function(req, res){
     Chicken
         .find()
         .where('time').gte(currentWeeHours).lt(nextWeeHours)
-        .select('did steps time')
         .sort('did time')// 按 did 正序, time 正序
         .exec(function (err, chickenDatas) {
 
@@ -137,13 +136,12 @@ router.get("/chickens_chart", function(req, res){
                 return;
             }
 
-            console.log("chickens chart = " + JSON.stringify(chickenDatas));
-
             // 按 did 分组, [{did : chickenData}]
             var did_data_dicts = [];
             for (var i = 0; i < chickenDatas.length; i++) {
                 var data = chickenDatas[i];
                 var did = data.did;
+                console.log("origin = " + JSON.stringify(data));
 
                 var lastDict = did_data_dicts.last;
 
@@ -156,7 +154,7 @@ router.get("/chickens_chart", function(req, res){
                 }
             }
 
-            console.log("chickens chart = " + JSON.stringify(did_data_dicts));
+            //console.log("chickens chart = " + JSON.stringify(did_data_dicts));
 
         })
 });
