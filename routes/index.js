@@ -160,10 +160,28 @@ router.get("/chickens_chart", function(req, res){
                 }
             }
 
+            //for (var i = 0; i < groupedChickenDatas.length; i++) {
+            //    console.log("did dict = " + JSON.stringify(groupedChickenDatas[i]));
+            //}
+
+            // 计算每小时步数之间差值
+            var groupedStepDeltas = [];
+
             for (var i = 0; i < groupedChickenDatas.length; i++) {
-                console.log("did dict = " + JSON.stringify(groupedChickenDatas[i]));
+                var group = groupedChickenDatas[i];
+                var dict = {did: group.first().did, stepDeltas: []};
+
+                for (var j = 1; j < group.length; j++) {
+                    var previousStep = group[j - 1].steps;
+                    var currentStep = group[j].steps;
+                    dict.stepDeltas.push(currentStep - previousStep);
+                }
+
+                groupedStepDeltas.push(dict);
+                console.log("setp delta = " + JSON.stringify(dict));
             }
-            return;
+
+
 
             // 波峰 crest
             // 波谷 trough
