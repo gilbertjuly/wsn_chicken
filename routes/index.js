@@ -113,6 +113,50 @@ router.get("/chickens", function(req, res){
     res.render('chickens/chickens/index.html');
 });
 
+router.get("/chickens_chart", function(req, res){
+    var year = +req.query.year;
+    var month = +req.query.month;
+    var day = +req.query.day;
+    console.log("查看 " + year + '-' + month + '-' + day + " 的小鸡图表");
+
+    var currentWeeHours = new Date(year, month, day);
+    var NexWeeHours = new Date(year, month, day + 1);
+
+    Chicken
+        .find()
+        .where('time').gte(currentWeeHours).lt(NexWeeHours)
+        .select('did steps time')
+        .sort('did time')// 按 did 正序, time 正序
+        .exec(function (err, chickenDatas) {
+
+            if (err) {
+                console.log(err);
+                res.send("error occur: " + err);
+                return;
+            }
+
+            // 按 did 分组, [{did : chickenData}]
+            var did_data_dicts = [];
+            for (var i = 0; i < chickenDatas.length; i++) {
+                var data = chickenDatas[i];
+                var did = data.did;
+
+                var lastDict = did_data_dicts.last;
+
+                if (!lastDict[did]) {
+                    var dict = {};
+                    dict[did] = [data];
+                    did_data_dicts.push(dict);
+                } else {
+                    lastDict[did].push(data);
+                }
+            }
+
+            console.log("chickens chart = " + JSON.stringify(did_data_dicts));
+
+        })
+});
+
 // return html to all data about one chicken
 router.get("/chicken", function(req, res){
     var did = req.query.did;
@@ -299,9 +343,6 @@ router.get("/chickens_at_hour", function(req, res){
     Chicken
         .find()
         .where('time').gte(currentHour).lt(nextHour)
-        //.$where(function () {
-        //    return this.time >= currentHour && this.time < nextHour;
-        //})
         .exec(function(err, chickens){
             if(err){
                 console.log("error: " + err);
