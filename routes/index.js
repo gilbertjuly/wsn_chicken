@@ -140,22 +140,27 @@ router.get("/chickens_chart", function(req, res){
                 return {did: item.did, steps: item.steps, time: item.time}
             });
 
-            // 按 did 分组, [{did : chickenData}]
-            var did_data_dicts = [];
-            for (var i = 0; i < chickenDatas.length; i++) {
+            // 按 did 分组
+            var did_data_dicts = [
+                {
+                    did: chickenDatas.first().did,
+                    datas: [chickenDatas.first()]
+                }
+            ];
+
+            for (var i = 1; i < chickenDatas.length; i++) {
                 var data = chickenDatas[i];
                 var did = data.did;
                 //console.log("origin = " + JSON.stringify(data));
 
                 var lastDict = did_data_dicts.last();
-                var lastDictArray = lastDict[did];
+                console.log("lastDict = " + JSON.stringify(lastDict));
 
-                if (lastDictArray === undefined) {
-                    var dict = {};
-                    dict[did] = [data];
-                    did_data_dicts.push(dict);
+                if (lastDict.did == did) {
+                    lastDict.datas.push(data);
                 } else {
-                    lastDictArray.push(data);
+                    var dict = {did: did, datas: [data]};
+                    did_data_dicts.push(dict);
                 }
             }
 
