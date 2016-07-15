@@ -202,11 +202,16 @@ router.get("/chickens_chart", function(req, res){
                 }
             
                 chickenScores.push(dict);
+
+                group = group.map(function (data) {
+                    return data.steps;
+                });
                 console.log("group = " + JSON.stringify(group));
                 console.log("score = " + JSON.stringify(dict));
             }
 
-            res.json(chickenScores);
+            res.render('chickens/chickens_chart.ejs', { chickenScores : JSON.stringify(chickenScores)});
+
             
 
             //for (var i = 0; i < groupedChickenDatas.length; i++) {

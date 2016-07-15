@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>今天的小鸡图表</title>
+
+    <script type="text/javascript" src="/chickens/javascripts/echarts.js"></script>
+
+</head>
+<body>
+
+<div id="chickens_card" style="width: 850px; height: 0px;"></div>
+
+<script>
+    var chickenScores = JSON.parse('<%- chickenScores %>');
+
+    if (chickenScores.length == 0) {
+        throw new Error("Should stop because no data");
+    }
+
+    // 设置图表
+    var divContainer = document.getElementById("chickens_card");
+    var chart = echarts.init(divContainer);
+
+    var xAxisTexts = [];
+    for (var i = 1; i <= 24; i++) {
+        xAxisTexts.push(i);
+    }
+
+    var size = Math.ceil(chickenScores.length / xAxisTexts.length)
+    var yAxisTexts = [];
+    for (var i = 1; i <= size; i++) {
+        yAxisTexts.push(i);
+    }
+
+    var chartDatas = [];
+    for (var i = 0; i < chickenScores.length; i++) {
+        var column = i % xAxisTexts.length;
+        var row = Math.floor(i / xAxisTexts.length);
+        chartDatas.push([column, row, chickenScores[i].score]);
+    }
+
+    var option = {
+        tooltip: {
+            position: 'top'
+        },
+        animation: false,
+        grid: {
+            left: 50,
+            right: 50,
+            top: 20,
+            bottom: 100
+        },
+        xAxis: {
+            type: 'category',
+            data: xAxisTexts,
+            splitArea: {
+                show: true
+            }
+        },
+        yAxis: {
+            type: 'category',
+            data: yAxisTexts,
+            splitArea: {
+                show: true
+            }
+        },
+        visualMap: {
+            min: 0,
+            max: 100,
+            calculable: true,
+            orient: 'horizontal',
+            left: 'center',
+            bottom: '20'
+        },
+        series: [{
+            name: 'Punch Card',
+            type: 'heatmap',
+            data: chartDatas,
+            label: {
+                normal: {
+                    show: true
+                }
+            },
+            itemStyle: {
+                //normal: {
+                //    borderWidth: 0.5,
+                //    borderColor: 'white'//'rgb(237, 237, 237)'
+                //},
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+
+    chart.setOption(option);
+    chart.on('click', function(event){
+        var did = chickenScores[event.dataIndex].did;
+        window.open("http://www.jumacc.com:1883/chicken?did=" + did);
+    })
+
+    divContainer.style.height = (option.grid.top + option.grid.bottom + yAxisTexts.length * 31) + 'px';
+    chart.resize();
+
+</script>
+
+</body>
+</html>
