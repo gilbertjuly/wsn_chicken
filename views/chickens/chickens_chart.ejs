@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title><%= dateString %>图谱</title>
+
+    <script type="text/javascript" src="/chickens/javascripts/echarts.js"></script>
+
+    <style type="text/css">
+        form.fixed_position  {
+            position: fixed;/*这是必须的*/
+            z-index: 999;
+            left:10px;
+            top:10px
+        }
+        input.hide {
+            z-index: 0;
+            height: 0px;
+            width: 0px;
+            visibility: hidden;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="chickens_card" style="width: 850px; height: 0px;"></div>
+<script>
+    var chickenScores = JSON.parse('<%- chickenScores %>');
+
+    if (chickenScores.length == 0) {
+        throw new Error("Should stop because no data");
+    }
+
+    // 设置图表
+    var divContainer = document.getElementById("chickens_card");
+    var chart = echarts.init(divContainer);
+
+    var xAxisTexts = [];
+    for (var i = 1; i <= 20; i++) {
+        xAxisTexts.push(i);
+    }
+
+    var size = Math.ceil(chickenScores.length / xAxisTexts.length)
+    var yAxisTexts = [];
+    for (var i = 1; i <= size; i++) {
+        yAxisTexts.push(i);
+    }
+
+    var chartDatas = [];
+    for (var i = 0; i < chickenScores.length; i++) {
+        var column = i % xAxisTexts.length;
+        var row = Math.floor(i / xAxisTexts.length);
+        var score = chickenScores[i].score;
+        chartDatas.push([column, row, score]);
+    }
+
+    var option = {
+        tooltip: {
+            position: 'top',
+            formatter: function (params, ticket, callback) {
+                return 'id = ' + chickenScores[params.dataIndex].did;
+            }
+        },
+        animation: false,
+        grid: {
+            left: 50,
+            right: 50,
+            top: 55,
+            bottom: 100
+        },
+        xAxis: {
+            name: '列号',
+            type: 'category',
+            data: xAxisTexts,
+            splitArea: {
+                show: true
+            }
+        },
+        yAxis: {
+            name: '行号',
+            type: 'category',
+            data: yAxisTexts,
+            splitArea: {
+                show: true
+            }
+        },
+        visualMap: {
+            left: 'center',
+            bottom: '20',
+            orient: 'horizontal',
+//            min: 0,
+//            max: 100,
+//            calculable: true,
+            type: 'piecewise',
+            pieces: [
+                {min: 0, max: 0, label: '0 (步数值全为 0)', color: '#d94e5d'},
+                {min: 1, max: 1, label: '1 (步数为 0 超过 5 次)', color: '#eac736'},
+                {min: 10, max: 10, label: '10 (数据少于 12 个)', color: '#50a3ba'},
+                {min: 100, max: 100, label: '100 (其他)', color: 'ForestGreen'},
+            ],
+            // inRange: {
+            //     color: ['#d94e5d','#eac736','#50a3ba', 'ForestGreen']
+            // },
+            textStyle: {
+                color: '#'
+            },
+        },
+        series: [{
+            name: '健康得分',
+            type: 'heatmap',
+            data: chartDatas,
+            label: {
+                normal: {
+                    show: true
+                }
+            },
+            itemStyle: {
+                //normal: {
+                //    borderWidth: 0.5,
+                //    borderColor: 'white'//'rgb(237, 237, 237)'
+                //},
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+
+    chart.setOption(option);
+    chart.on('click', function(event){
+        var did = chickenScores[event.dataIndex].did;
+        window.open("http://www.jumacc.com:1883/chicken?did=" + did);
+    })
+
+    divContainer.style.height = (option.grid.top + option.grid.bottom + yAxisTexts.length * 31) + 'px';
+    chart.resize();
+
+</script>
+
+
+<form class="fixed_position" action="http://www.jumacc.com:1883/chickens_chart" method="get">
+    <input type="submit" value="前一天" onclick="requestAnotherChart(-1)" />
+    <input type="submit" value="后一天" onclick="requestAnotherChart(1)" id="nextDay"/>
+    <input type="text" name="year"  id="year"  class="hide">
+    <input type="text" name="month" id="month" class="hide">
+    <input type="text" name="day"   id="day"   class="hide" >
+</form>
+<script>
+    var yearNode = document.getElementById('year')
+    var monthNode = document.getElementById('month')
+    var dayNode = document.getElementById('day')
+
+    function setDateNode(date) {
+        yearNode.value = date.getFullYear();
+        monthNode.value = date.getMonth();
+        dayNode.value = date.getDate();
+
+//        var now = new Date();
+//        var isEarlier = date.getFullYear() < now.getFullYear() || date.getMonth() < now.getMonth() || date.getDate() < now.getDate();
+    }
+
+
+    var time = JSON.parse('<%- timeDict %>');
+    setDateNode(new Date(time.year, time.month, time.day));
+
+    function requestAnotherChart(deltaOfDay) {
+        var year = +yearNode.value;
+        var month = +monthNode.value;
+        var day = (+dayNode.value) + deltaOfDay;
+
+        var previousDay = new Date(year, month, day);
+        setDateNode(previousDay);
+    }
+</script>
+
+</body>
+</html>

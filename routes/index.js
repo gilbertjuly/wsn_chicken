@@ -107,10 +107,231 @@ router.post("/save_chicken", function(req, res){
     });
 });
 
+router.post("/save_chickens", function(req, res){
+    console.log("save chickens");
+    console.log(JSON.stringify(req.body));
+
+    var chickens = req.body.chickenDatas || req.body;
+    chickens = chickens.map(function (item) {
+        return (new Chicken({ did: item.did, steps: item.steps, volt: item.volt}))
+    });
+
+    Chicken.create(chickens, function (err, chickens) {
+        if(err){
+            console.log(err);
+            res.json({"status":"ERROR"});
+        }
+        else{
+            console.log('saved ' + chickens.length + ' chicken');
+            res.json({"status":("did save " + chickens.length + " data")});
+        }
+    });
+});
+
 // return html to show chicken list
 router.get("/chickens", function(req, res){
     console.log("GET chickens html");
     res.render('chickens/chickens/index.html');
+});
+
+router.get("/chickens_chart", function(req, res){
+    var year = +req.query.year;
+    var month = +req.query.month;
+    var day = +req.query.day;
+
+    var date = new Date();
+    year = year || date.getFullYear();
+    month = month || date.getMonth();
+    day = day || date.getDate();
+
+    var dateString = year + '-' + (month + 1) + '-' + day;
+    console.log("查看 " + dateString + " 的小鸡图表");
+
+    var currentWeeHours = new Date(year, month, day);
+    var nextWeeHours = new Date(year, month, day + 1);
+
+    console.log(currentWeeHours.toISOString() + ' == ' + nextWeeHours.toISOString());
+
+    Chicken
+        .find()
+        .where('time').gte(currentWeeHours).lt(nextWeeHours)
+        .sort('did time')// 按 did 正序, time 正序
+        .exec(function (err, chickenDatas) {
+
+            if (err) {
+                console.log(err);
+                res.send("error occur: " + err);
+                return;
+            }
+
+            if (chickenDatas.length === 0) {
+                res.send("未在数据库中查找到 " + dateString + "的数据");
+                return;
+            }
+
+            chickenDatas = chickenDatas.map(function (item) {
+                return {did: item.did, steps: item.steps, time: item.time}
+            });
+
+            // 按 did 分组
+            var groupedChickenDatas = [[chickenDatas.first()]];
+
+            for (var i = 1; i < chickenDatas.length; i++) {
+                var data = chickenDatas[i];
+                var lastArray = groupedChickenDatas.last();
+
+                if (lastArray.first().did == data.did) {
+                    lastArray.push(data);
+                } else {
+                    groupedChickenDatas.push([data]);
+                }
+            }
+
+            // 检查 steps 为 0 的数据的个数
+            var chickenScores = [];
+            var isZeroSteps = function (data) { return data.steps === 0; };
+            
+            for (var i = 0; i < groupedChickenDatas.length; i++) {
+                var group = groupedChickenDatas[i];
+                var dict = {did: group.first().did, score: 100};
+
+                // 当天的步数全为 0
+                if (group.every(isZeroSteps)) {
+                    dict.score = 0
+                }
+                // 当天步数为 0 的次数超过 5 次
+                else if (group.filter(isZeroSteps).length > 5){
+                    dict.score = 1;
+                }
+                // 当天的数据量小于 12 个
+                else if (group.length < 12) {
+                    dict.score = 10;
+                }
+            
+                chickenScores.push(dict);
+
+                group = group.map(function (data) {
+                    return data.steps;
+                });
+                console.log("group = " + JSON.stringify(group));
+                console.log("score = " + JSON.stringify(dict));
+            }
+
+            var timeDict = {year: year, month: month, day: day};
+            var ejsData = {dateString: dateString, chickenScores : JSON.stringify(chickenScores), timeDict: JSON.stringify(timeDict)};
+            res.render('chickens/chickens_chart.ejs', ejsData);
+
+            
+
+            //for (var i = 0; i < groupedChickenDatas.length; i++) {
+            //    console.log("did dict = " + JSON.stringify(groupedChickenDatas[i]));
+            //}
+
+            // 计算每小时的实际步数数
+            //var groupedStepIncrements = [];
+            //
+            //for (var i = 0; i < groupedChickenDatas.length; i++) {
+            //    var group = groupedChickenDatas[i];
+            //    var dict = {did: group.first().did, stepsInHour: []};
+            //
+            //    for (var j = 1; j < group.length; j++) {
+            //        var stepInPreviousHour = group[j - 1].steps;
+            //        var stepInCurrentHour = group[j].steps;
+            //        dict.stepsInHour.push(stepInCurrentHour - stepInPreviousHour);
+            //    }
+            //
+            //    groupedStepIncrements.push(dict);
+            //}
+            //
+            //// 计算某个小时和上一个小时的步数的差值
+            //var groupedStepDeltas = [];
+            //
+            //for (var i = 0; i < groupedStepIncrements.length; i++) {
+            //    var group = groupedStepIncrements[i];
+            //    var stepsInHour = group.stepsInHour;
+            //    var dict = {did: group.did, stepDeltas: []};
+            //
+            //    for (var j = 1; j < stepsInHour.length; j++) {
+            //        var previousStep = stepsInHour[j - 1];
+            //        var currentStep = stepsInHour[j];
+            //        dict.stepDeltas.push(currentStep - previousStep);
+            //    }
+            //
+            //    groupedStepDeltas.push(dict);
+            //}
+            //
+            //console.log("in hour len = " + groupedStepIncrements.length + ", delta len = " + groupedStepDeltas.length);
+            //for (var i = 0; i < groupedStepDeltas.length; i++) {
+            //    console.log("setp in hour = " + JSON.stringify(groupedStepIncrements[i]));
+            //    console.log("setp delta = " + JSON.stringify(groupedStepDeltas[i]));
+            //}
+            //
+            //var chickenHealths = [];
+            //for (var i = 0; i < groupedStepDeltas.length; i++) {
+            //    var stepDelta = groupedStepDeltas[i];
+            //
+            //
+            //
+            //    chickenHealths.push({did: stepDelta.did, health: 0});
+            //}
+
+
+
+            // 数据的中间缺失
+            // 数据中间出现了 0
+            // 上升段和下降段的倾斜度是不是合适
+            // 相邻两个点差值过大, 在上升段或下降段形成了突出部
+            // 双驼峰本身过于理想, 小鸡数量很多的时候, 双驼峰能覆盖的范围不够大
+
+
+
+            // 波峰 crest
+            // 波谷 trough
+            //for (var i = 0; i < did_data_dicts.length; i++) {
+            //    var data = chickenDatas[i];
+            //    var did = data.did;
+            //    //console.log("origin = " + JSON.stringify(data));
+            //
+            //    var lastDict = did_data_dicts.last();
+            //
+            //    if (lastDict.did == did) {
+            //        lastDict.datas.push(data);
+            //    } else {
+            //        var dict = {did: did, datas: [data]};
+            //        did_data_dicts.push(dict);
+            //    }
+            //}
+            //
+            //var did_health_dicts = did_data_dicts.map(function (data_dict) {
+            //    var health_dict = {did: data_dict.did, health: 0};
+            //
+            //    if (data_dict.datas.length >= 20) {
+            //        // 按步数从小到大排序
+            //        var sortedDatas = data_dict.datas.sort(function (item1, item2) {
+            //            return item1.steps > item2.steps
+            //        });
+            //
+            //    }
+            //
+            //    // 数据中 0 出现的次数太多
+            //    var invalidDatas = data_dict.datas.filter(function (data) {
+            //        return data.steps === 0;
+            //    });
+            //    if (data_dict.datas.length > 5) return health_dict;
+            //
+            //    // 数据太少
+            //    if (invalidDatas.length < 12) {
+            //        health_dict.health = 1;
+            //        return health_dict;
+            //    }
+            //
+            //
+            //
+            //})
+
+            //console.log("chickens chart = " + JSON.stringify(did_data_dicts));
+
+        })
 });
 
 // return html to all data about one chicken
@@ -299,9 +520,6 @@ router.get("/chickens_at_hour", function(req, res){
     Chicken
         .find()
         .where('time').gte(currentHour).lt(nextHour)
-        //.$where(function () {
-        //    return this.time >= currentHour && this.time < nextHour;
-        //})
         .exec(function(err, chickens){
             if(err){
                 console.log("error: " + err);
