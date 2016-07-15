@@ -43,7 +43,10 @@
 
     var option = {
         tooltip: {
-            position: 'top'
+            position: 'top',
+            formatter: function (params, ticket, callback) {
+                return 'id = ' + chickenScores[params.dataIndex].did;
+            }
         },
         animation: false,
         grid: {
@@ -88,7 +91,7 @@
             },
         },
         series: [{
-            name: 'Punch Card',
+            name: '健康得分',
             type: 'heatmap',
             data: chartDatas,
             label: {
