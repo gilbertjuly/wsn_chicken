@@ -140,8 +140,8 @@ router.get("/chickens_chart", function(req, res){
     var day = +req.query.day;
 
     var date = new Date();
-    year = date.getFullYear;
-    month = date.getMonth;
+    year = date.getFullYear();
+    month = date.getMonth();
     day = date.getDate();
 
     var dateString = year + '-' + month + '-' + day;
