@@ -179,7 +179,6 @@ router.get("/chickens_chart", function(req, res){
 
                 groupedStepIncrements.push(dict);
                 if (dict.stepsInHour.length > 2) {
-                    console.log("setp in hour = " + JSON.stringify(dict));
                 }
             }
 
@@ -198,8 +197,16 @@ router.get("/chickens_chart", function(req, res){
                 }
 
                 groupedStepDeltas.push(dict);
-                console.log("setp delta = " + JSON.stringify(dict));
             }
+
+            console.log("in hour len = " + groupedStepIncrements.length + ", delta len = " + groupedStepDeltas.length);
+
+            for (var i = 0; i < groupedStepIncrements.length; i++) {
+                console.log("setp in hour = " + JSON.stringify(groupedStepIncrements[i]));
+                console.log("setp delta = " + JSON.stringify(groupedStepDeltas[i]));
+            }
+
+
 
 
 
