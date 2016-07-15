@@ -15,7 +15,9 @@
             top:10px
         }
         input.hide {
+            z-index: 0;
             height: 0px;
+            width: 0px;
         }
     </style>
 
@@ -137,11 +139,12 @@
 
 
 <form class="fixed_position" action="http://www.jumacc.com:1883/chickens_chart" method="get">
+    <input type="submit" value="前一天" onclick="requestAnotherChart(-1)" />
+    <br />
+    <input type="submit" value="后一天" onclick="requestAnotherChart(1)" id="nextDay"/>
     <input type="text" name="year"  id="year"  class="hide">
     <input type="text" name="month" id="month" class="hide">
     <input type="text" name="day"   id="day"   class="hide" >
-    <input type="submit" value="前一天" onclick="requestAnotherChart(-1)" />
-    <input type="submit" value="后一天" onclick="requestAnotherChart(1)" id="nextDay"/>
 </form>
 <script>
     var yearNode = document.getElementById('year')
