@@ -164,16 +164,36 @@ router.get("/chickens_chart", function(req, res){
             //    console.log("did dict = " + JSON.stringify(groupedChickenDatas[i]));
             //}
 
-            // 计算每小时步数之间差值
-            var groupedStepDeltas = [];
+            // 计算每小时的实际步数数
+            var groupedStepIncrements = [];
 
             for (var i = 0; i < groupedChickenDatas.length; i++) {
                 var group = groupedChickenDatas[i];
-                var dict = {did: group.first().did, stepDeltas: []};
+                var dict = {did: group.first().did, stepsInHour: []};
 
                 for (var j = 1; j < group.length; j++) {
-                    var previousStep = group[j - 1].steps;
-                    var currentStep = group[j].steps;
+                    var stepInPreviousHour = group[j - 1].steps;
+                    var stepInCurrentHour = group[j].steps;
+                    dict.stepsInHour.push(stepInCurrentHour - stepInPreviousHour);
+                }
+
+                groupedStepIncrements.push(dict);
+                if (dict.stepsInHour.length > 2) {
+                    console.log("setp in hour = " + JSON.stringify(dict));
+                }
+            }
+
+            // 计算某个小时和上一个小时的步数的差值
+            var groupedStepDeltas = [];
+
+            for (var i = 0; i < groupedStepIncrements.length; i++) {
+                var group = groupedStepIncrements[i];
+                var stepsInHour = group.stepsInHour;
+                var dict = {did: group.did, stepDeltas: []};
+
+                for (var j = 1; j < stepsInHour.length; j++) {
+                    var previousStep = stepsInHour[j - 1];
+                    var currentStep = stepsInHour[j];
                     dict.stepDeltas.push(currentStep - previousStep);
                 }
 
