@@ -111,7 +111,7 @@ router.post("/save_chickens", function(req, res){
     console.log("save chickens");
     console.log(JSON.stringify(req.body));
 
-    var chickens = chickens.map(function (item) {
+    var chickens = req.body.map(function (item) {
         return (new Chicken({ did: item.did, steps: item.steps, volt: item.volt}))
     });
 
