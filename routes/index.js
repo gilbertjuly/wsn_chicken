@@ -147,8 +147,8 @@ router.get("/chickens_chart", function(req, res){
     var dateString = year + '-' + month + '-' + day;
     console.log("查看 " + dateString + " 的小鸡图表");
 
-    var currentWeeHours = new Date(year, month - 1, day);
-    var nextWeeHours = new Date(year, month - 1, day + 1);
+    var currentWeeHours = new Date(year, month, day);
+    var nextWeeHours = new Date(year, month, day + 1);
 
     console.log(currentWeeHours.toISOString() + ' == ' + nextWeeHours.toISOString());
 
