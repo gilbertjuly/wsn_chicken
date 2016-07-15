@@ -163,7 +163,8 @@
     }
 
 
-    setDateNode(new Date());
+    var time = JSON.parse('<%- timeDict %>');
+    setDateNode(new Date(time.year, time.month, time.day));
 
     function requestAnotherChart(deltaOfDay) {
         var year = +yearNode.value;

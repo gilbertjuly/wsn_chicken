@@ -144,7 +144,7 @@ router.get("/chickens_chart", function(req, res){
     month = month || date.getMonth();
     day = day || date.getDate();
 
-    var dateString = year + '-' + month + '-' + day;
+    var dateString = year + '-' + (month + 1) + '-' + day;
     console.log("查看 " + dateString + " 的小鸡图表");
 
     var currentWeeHours = new Date(year, month, day);
@@ -217,7 +217,9 @@ router.get("/chickens_chart", function(req, res){
                 console.log("score = " + JSON.stringify(dict));
             }
 
-            res.render('chickens/chickens_chart.ejs', {dateString: dateString, chickenScores : JSON.stringify(chickenScores)});
+            var timeDict = {year: year, month: month, day: day};
+            var ejsData = {dateString: dateString, chickenScores : JSON.stringify(chickenScores), timeDict: JSON.stringify(timeDict)};
+            res.render('chickens/chickens_chart.ejs', ejsData);
 
             
 
