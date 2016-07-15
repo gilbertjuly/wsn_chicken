@@ -37,7 +37,7 @@
     var chart = echarts.init(divContainer);
 
     var xAxisTexts = [];
-    for (var i = 1; i <= 24; i++) {
+    for (var i = 1; i <= 20; i++) {
         xAxisTexts.push(i);
     }
 
@@ -70,6 +70,7 @@
             bottom: 100
         },
         xAxis: {
+            name: '列号',
             type: 'category',
             data: xAxisTexts,
             splitArea: {
@@ -77,6 +78,7 @@
             }
         },
         yAxis: {
+            name: '行号',
             type: 'category',
             data: yAxisTexts,
             splitArea: {
@@ -140,7 +142,6 @@
 
 <form class="fixed_position" action="http://www.jumacc.com:1883/chickens_chart" method="get">
     <input type="submit" value="前一天" onclick="requestAnotherChart(-1)" />
-    <br />
     <input type="submit" value="后一天" onclick="requestAnotherChart(1)" id="nextDay"/>
     <input type="text" name="year"  id="year"  class="hide">
     <input type="text" name="month" id="month" class="hide">
@@ -150,6 +151,10 @@
     var yearNode = document.getElementById('year')
     var monthNode = document.getElementById('month')
     var dayNode = document.getElementById('day')
+
+    yearNode.hide();
+    monthNode.hide();
+    dayNode.hide();
 
     function setDateNode(date) {
         yearNode.value = date.getFullYear();
