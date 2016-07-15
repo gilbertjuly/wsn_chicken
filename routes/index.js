@@ -180,61 +180,94 @@ router.get("/chickens_chart", function(req, res){
                 }
             }
 
+            // 检查 steps 为 0 的数据的个数
+            var chickenScores = [];
+            var isZeroSteps = function (data) { return data.steps === 0; };
+            
+            for (var i = 0; i < groupedChickenDatas.length; i++) {
+                var group = groupedChickenDatas[i];
+                var dict = {did: group.first().did, score: 100};
+
+                // 当天的步数全为 0
+                if (group.every(isZeroSteps)) {
+                    dict.score = 0
+                }
+                // 当天步数为 0 的次数超过 5 次
+                else if (group.filter(isZeroSteps).length > 5){
+                    dict.score = 1;
+                }
+                // 当天的数据量小于 5 个
+                else if (group.length < 5) {
+                    dict.score = 10;
+                }
+            
+                chickenScores.push(dict);
+                console.log("group = " + JSON.stringify(group));
+                console.log("score = " + JSON.stringify(dict));
+            }
+
+            res.json(chickenScores);
+            
+
             //for (var i = 0; i < groupedChickenDatas.length; i++) {
             //    console.log("did dict = " + JSON.stringify(groupedChickenDatas[i]));
             //}
 
             // 计算每小时的实际步数数
-            var groupedStepIncrements = [];
-
-            for (var i = 0; i < groupedChickenDatas.length; i++) {
-                var group = groupedChickenDatas[i];
-                var dict = {did: group.first().did, stepsInHour: []};
-
-                for (var j = 1; j < group.length; j++) {
-                    var stepInPreviousHour = group[j - 1].steps;
-                    var stepInCurrentHour = group[j].steps;
-                    dict.stepsInHour.push(stepInCurrentHour - stepInPreviousHour);
-                }
-
-                groupedStepIncrements.push(dict);
-            }
-
-            // 计算某个小时和上一个小时的步数的差值
-            var groupedStepDeltas = [];
-
-            for (var i = 0; i < groupedStepIncrements.length; i++) {
-                var group = groupedStepIncrements[i];
-                var stepsInHour = group.stepsInHour;
-                var dict = {did: group.did, stepDeltas: []};
-
-                for (var j = 1; j < stepsInHour.length; j++) {
-                    var previousStep = stepsInHour[j - 1];
-                    var currentStep = stepsInHour[j];
-                    dict.stepDeltas.push(currentStep - previousStep);
-                }
-
-                groupedStepDeltas.push(dict);
-            }
-
-            console.log("in hour len = " + groupedStepIncrements.length + ", delta len = " + groupedStepDeltas.length);
-            for (var i = 0; i < groupedStepDeltas.length; i++) {
-                console.log("setp in hour = " + JSON.stringify(groupedStepIncrements[i]));
-                console.log("setp delta = " + JSON.stringify(groupedStepDeltas[i]));
-            }
-
-            var chickenHealths = []
-            for (var i = 0; i < groupedStepDeltas.length; i++) {
-                var stepDelta = groupedStepDeltas[i];
-
-
-
-                chickenHealths.push({did: stepDelta.did, health: 0});
-            }
-
-
+            //var groupedStepIncrements = [];
+            //
+            //for (var i = 0; i < groupedChickenDatas.length; i++) {
+            //    var group = groupedChickenDatas[i];
+            //    var dict = {did: group.first().did, stepsInHour: []};
+            //
+            //    for (var j = 1; j < group.length; j++) {
+            //        var stepInPreviousHour = group[j - 1].steps;
+            //        var stepInCurrentHour = group[j].steps;
+            //        dict.stepsInHour.push(stepInCurrentHour - stepInPreviousHour);
+            //    }
+            //
+            //    groupedStepIncrements.push(dict);
+            //}
+            //
+            //// 计算某个小时和上一个小时的步数的差值
+            //var groupedStepDeltas = [];
+            //
+            //for (var i = 0; i < groupedStepIncrements.length; i++) {
+            //    var group = groupedStepIncrements[i];
+            //    var stepsInHour = group.stepsInHour;
+            //    var dict = {did: group.did, stepDeltas: []};
+            //
+            //    for (var j = 1; j < stepsInHour.length; j++) {
+            //        var previousStep = stepsInHour[j - 1];
+            //        var currentStep = stepsInHour[j];
+            //        dict.stepDeltas.push(currentStep - previousStep);
+            //    }
+            //
+            //    groupedStepDeltas.push(dict);
+            //}
+            //
+            //console.log("in hour len = " + groupedStepIncrements.length + ", delta len = " + groupedStepDeltas.length);
+            //for (var i = 0; i < groupedStepDeltas.length; i++) {
+            //    console.log("setp in hour = " + JSON.stringify(groupedStepIncrements[i]));
+            //    console.log("setp delta = " + JSON.stringify(groupedStepDeltas[i]));
+            //}
+            //
+            //var chickenHealths = [];
+            //for (var i = 0; i < groupedStepDeltas.length; i++) {
+            //    var stepDelta = groupedStepDeltas[i];
+            //
+            //
+            //
+            //    chickenHealths.push({did: stepDelta.did, health: 0});
+            //}
 
 
+
+            // 数据的中间缺失
+            // 数据中间出现了 0
+            // 上升段和下降段的倾斜度是不是合适
+            // 相邻两个点差值过大, 在上升段或下降段形成了突出部
+            // 双驼峰本身过于理想, 小鸡数量很多的时候, 双驼峰能覆盖的范围不够大
 
 
 
@@ -282,7 +315,6 @@ router.get("/chickens_chart", function(req, res){
             //
             //})
 
-            res.json(did_data_dicts);
             //console.log("chickens chart = " + JSON.stringify(did_data_dicts));
 
         })
