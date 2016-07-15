@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>今天的小鸡图表</title>
+    <title><%= dateString %>图谱</title>
 
     <script type="text/javascript" src="/chickens/javascripts/echarts.js"></script>
 
@@ -152,10 +152,6 @@
     var yearNode = document.getElementById('year')
     var monthNode = document.getElementById('month')
     var dayNode = document.getElementById('day')
-
-    yearNode.hide();
-    monthNode.hide();
-    dayNode.hide();
 
     function setDateNode(date) {
         yearNode.value = date.getFullYear();

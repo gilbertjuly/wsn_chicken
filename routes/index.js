@@ -217,7 +217,7 @@ router.get("/chickens_chart", function(req, res){
                 console.log("score = " + JSON.stringify(dict));
             }
 
-            res.render('chickens/chickens_chart.ejs', { chickenScores : JSON.stringify(chickenScores)});
+            res.render('chickens/chickens_chart.ejs', {dateString: dateString, chickenScores : JSON.stringify(chickenScores)});
 
             
 
