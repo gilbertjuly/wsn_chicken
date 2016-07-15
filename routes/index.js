@@ -107,6 +107,28 @@ router.post("/save_chicken", function(req, res){
     });
 });
 
+router.post("/save_chickens", function(req, res){
+    console.log("save chickens");
+
+    var chickens = req.body;
+    console.log(typeof chickens);
+
+    chickens = chickens.map(function (item) {
+        return (new Chicken({ did: item.did, steps: item.steps, volt: item.volt}))
+    });
+
+    Chicken.create(chickens, function (err, chickens) {
+        if(err){
+            console.log(err);
+            res.json({"status":"ERROR"});
+        }
+        else{
+            console.log('saved ' + chickens.length + ' chicken');
+            res.json({"status":"OK"});
+        }
+    });
+});
+
 // return html to show chicken list
 router.get("/chickens", function(req, res){
     console.log("GET chickens html");
@@ -178,8 +200,6 @@ router.get("/chickens_chart", function(req, res){
                 }
 
                 groupedStepIncrements.push(dict);
-                if (dict.stepsInHour.length > 2) {
-                }
             }
 
             // 计算某个小时和上一个小时的步数的差值
@@ -200,11 +220,21 @@ router.get("/chickens_chart", function(req, res){
             }
 
             console.log("in hour len = " + groupedStepIncrements.length + ", delta len = " + groupedStepDeltas.length);
-
-            for (var i = 0; i < groupedStepIncrements.length; i++) {
+            for (var i = 0; i < groupedStepDeltas.length; i++) {
                 console.log("setp in hour = " + JSON.stringify(groupedStepIncrements[i]));
                 console.log("setp delta = " + JSON.stringify(groupedStepDeltas[i]));
             }
+
+            var chickenHealths = []
+            for (var i = 0; i < groupedStepDeltas.length; i++) {
+                var stepDelta = groupedStepDeltas[i];
+
+
+
+                chickenHealths.push({did: stepDelta.did, health: 0});
+            }
+
+
 
 
 
