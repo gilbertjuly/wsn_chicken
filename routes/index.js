@@ -123,7 +123,7 @@ router.post("/save_chickens", function(req, res){
         }
         else{
             console.log('saved ' + chickens.length + ' chicken');
-            res.json({"status":"OK"});
+            res.json({"status":("did save " + chickens.length + " data")});
         }
     });
 });
