@@ -7,6 +7,18 @@
 
     <script type="text/javascript" src="/chickens/javascripts/echarts.js"></script>
 
+    <style type="text/css">
+        form.fixed_position  {
+            position: fixed;/*这是必须的*/
+            z-index: 999;
+            left:10px;
+            top:10px
+        }
+        input.hide {
+            height: 0px;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -121,6 +133,41 @@
     divContainer.style.height = (option.grid.top + option.grid.bottom + yAxisTexts.length * 31) + 'px';
     chart.resize();
 
+</script>
+
+
+<form class="fixed_position" action="http://www.jumacc.com:1883/chickens_chart" method="get">
+    <input type="text" name="year"  id="year"  class="hide">
+    <input type="text" name="month" id="month" class="hide">
+    <input type="text" name="day"   id="day"   class="hide" >
+    <input type="submit" value="前一天" onclick="requestAnotherChart(-1)" />
+    <input type="submit" value="后一天" onclick="requestAnotherChart(1)" id="nextDay"/>
+</form>
+<script>
+    var yearNode = document.getElementById('year')
+    var monthNode = document.getElementById('month')
+    var dayNode = document.getElementById('day')
+
+    function setDateNode(date) {
+        yearNode.value = date.getFullYear();
+        monthNode.value = date.getMonth();
+        dayNode.value = date.getDate();
+
+//        var now = new Date();
+//        var isEarlier = date.getFullYear() < now.getFullYear() || date.getMonth() < now.getMonth() || date.getDate() < now.getDate();
+    }
+
+
+    setDateNode(new Date());
+
+    function requestAnotherChart(deltaOfDay) {
+        var year = +yearNode.value;
+        var month = +monthNode.value;
+        var day = (+dayNode.value) + deltaOfDay;
+
+        var previousDay = new Date(year, month, day);
+        setDateNode(previousDay);
+    }
 </script>
 
 </body>

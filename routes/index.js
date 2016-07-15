@@ -140,9 +140,9 @@ router.get("/chickens_chart", function(req, res){
     var day = +req.query.day;
 
     var date = new Date();
-    year = date.getFullYear();
-    month = date.getMonth();
-    day = date.getDate();
+    year = year || date.getFullYear();
+    month = month || date.getMonth();
+    day = day || date.getDate();
 
     var dateString = year + '-' + month + '-' + day;
     console.log("查看 " + dateString + " 的小鸡图表");

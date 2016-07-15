@@ -23,12 +23,6 @@
 </head>
 <body>
 
-<form action="http://www.jumacc.com:1883/chickens_chart" method="get">
-    <input type="submit" value="查看今天的数据图表">
-</form>
-
-<br />
-
 <script>
     // 在微信公众号中, 跳转到下一个页面在返回当前页时, 页面会重新加载, 如果不用 sessionStorage 存储 showingDate, 那么它就会被重新初始
     // 化, 然后重新请求并填充到表格中的数据很可能与原先显示的数据不同.
@@ -59,7 +53,7 @@
 <form action="http://www.jumacc.com:1883/chicken" method="get">
     <p>
         <input type="text" placeholder="请填写设备 id" name="did" />
-        <input type="submit" value="确定" />
+        <input type="submit" value="查询" />
     </p>
 </form>
 
