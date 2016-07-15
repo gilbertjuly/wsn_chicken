@@ -203,9 +203,9 @@ router.get("/chickens_chart", function(req, res){
                 else if (group.filter(isZeroSteps).length > 5){
                     dict.score = 1;
                 }
-                // 当天的数据量小于 5 个
-                else if (group.length < 5) {
-                    dict.score = 10;
+                // 当天的数据量小于 12 个
+                else if (group.length < 12) {
+                    dict.score = 11;
                 }
             
                 chickenScores.push(dict);
