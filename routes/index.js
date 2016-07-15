@@ -205,7 +205,7 @@ router.get("/chickens_chart", function(req, res){
                 }
                 // 当天的数据量小于 12 个
                 else if (group.length < 12) {
-                    dict.score = 11;
+                    dict.score = 10;
                 }
             
                 chickenScores.push(dict);
