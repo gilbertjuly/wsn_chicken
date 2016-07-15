@@ -44,7 +44,8 @@
     for (var i = 0; i < chickenScores.length; i++) {
         var column = i % xAxisTexts.length;
         var row = Math.floor(i / xAxisTexts.length);
-        chartDatas.push([column, row, chickenScores[i].score]);
+        var score = chickenScores[i].score;
+        chartDatas.push([column, row, score]);
     }
 
     var option = {
@@ -80,14 +81,18 @@
 //            max: 100,
 //            calculable: true,
             type: 'piecewise',
-            dimension: 2
-            categories: ['0', '1', '10', '100'],
-            color: {
-                '0': 'red',
-                '1': 'yellow',
-                '10': 'blue',
-                '100': 'green'
-            }
+            pieces: [
+                {min: 0, max: 0, label: '步数值全为 0', color: '#d94e5d'},
+                {min: 1, max: 1, label: '重置超过 5 次', color: '#eac736'},
+                {min: 10, max: 10, label: '数据少于 12 个', color: '#50a3ba'},
+                {min: 100, max: 100, label: '其他', color: 'ForestGreen'},
+            ],
+            // inRange: {
+            //     color: ['#d94e5d','#eac736','#50a3ba', 'ForestGreen']
+            // },
+            textStyle: {
+                color: '#'
+            },
         },
         series: [{
             name: 'Punch Card',
