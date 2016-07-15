@@ -11,7 +11,7 @@
 <body>
 
 <p>红色: 当天的步数值全为 0</p>
-<p>黄色: 当天步数为 0 的次数操作 5 次</p>
+<p>黄色: 当天步数为 0 的次数超过 5 次</p>
 <p>蓝色: 已经收到的当天的数据少于 12 个</p>
 <p>绿色: 其他</p>
 <br />
@@ -73,12 +73,22 @@
             }
         },
         visualMap: {
-            min: 0,
-            max: 100,
-            calculable: true,
-            orient: 'horizontal',
             left: 'center',
-            bottom: '20'
+            bottom: '20',
+            orient: 'horizontal',
+//            min: 0,
+//            max: 100,
+//            calculable: true,
+            type: 'piecewise',
+            categories: ['0', '1', '10', '100'],
+            inRange:{
+                color: {
+                    '0': 'red',
+                    '1': 'yellow',
+                    '10': 'blue',
+                    '100': 'green'
+                }
+            }
         },
         series: [{
             name: 'Punch Card',
