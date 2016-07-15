@@ -52,7 +52,7 @@ app.use(function(err, req, res, next) {
 });
 
 if (!module.parent) {
-    var server = app.listen(1883, function () {
+    var server = app.listen(80, function () {
         var host = server.address().address;
         var port = server.address().port;
         console.log("Express started on http://%s:%s", host, port);

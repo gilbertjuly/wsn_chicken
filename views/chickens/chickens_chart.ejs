@@ -132,7 +132,7 @@
     chart.setOption(option);
     chart.on('click', function(event){
         var did = chickenScores[event.dataIndex].did;
-        window.open("http://www.jumacc.com:1883/chicken?did=" + did);
+        window.open("http://www.jumacc.com/chicken?did=" + did);
     })
 
     divContainer.style.height = (option.grid.top + option.grid.bottom + yAxisTexts.length * 31) + 'px';
@@ -141,7 +141,7 @@
 </script>
 
 
-<form class="fixed_position" action="http://www.jumacc.com:1883/chickens_chart" method="get">
+<form class="fixed_position" action="http://www.jumacc.com/chickens_chart" method="get">
     <input type="submit" value="前一天" onclick="requestAnotherChart(-1)" />
     <input type="submit" value="后一天" onclick="requestAnotherChart(1)" id="nextDay"/>
     <input type="text" name="year"  id="year"  class="hide">
